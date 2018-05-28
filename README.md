@@ -1,4 +1,4 @@
-# Popular Movies App version 1.0
+# Popular Movies App version 2.0
 
 
 <p align="center"><img src="https://cdn.rawgit.com/bruno78/popular-movies-app/5b33a0a7/screenshots/Screen%20Shot%202018-05-28%20at%2011.52.18%20AM.png" width="200" alt="movie list image"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app/5b33a0a7/screenshots/Screen%20Shot%202018-05-28%20at%2011.51.41%20AM.png" width="200" alt="Movie detail"></p>
@@ -17,6 +17,8 @@ You’ll build the complete functionality of this app in two stages which you wi
 
 Download or clone this repo on your machine, open the project using Android Studio. Once Gradle builds
 the project, click "run" and choose an emulator.
+
+This is Stage 2 of the Popular Movies App, for Stage 1, click [here](https://github.com/bruno78/popular-movies-app).
 
 ## Stage 1:  Main Discovery Screen, A Details View, and Settings
 ### User Experience
