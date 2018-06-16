@@ -1,4 +1,4 @@
-# Popular Movies App version 2.0
+# Popular Movies App version 2.0 *in progress...*
 
 
 <p align="center"><img src="https://cdn.rawgit.com/bruno78/popular-movies-app/5b33a0a7/screenshots/Screen%20Shot%202018-05-28%20at%2011.52.18%20AM.png" width="200" alt="movie list image"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app/5b33a0a7/screenshots/Screen%20Shot%202018-05-28%20at%2011.51.41%20AM.png" width="200" alt="Movie detail"></p>
@@ -78,6 +78,5 @@ You’ll add more information to your movie details view:
 - [ ] If Room is used, database is not re-queried unnecessarily. LiveData is used to observe changes in the database and update the UI accordingly.
 - [ ] If Room is used, database is not re-queried unnecessarily after rotation. Cached LiveData from ViewModel is used instead.
 
-### Problems faced:
 
 
