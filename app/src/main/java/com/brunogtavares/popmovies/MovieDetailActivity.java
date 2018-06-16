@@ -8,28 +8,27 @@ import android.widget.TextView;
 import com.brunogtavares.popmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieDetailActivity extends AppCompatActivity {
 
     private static final String MOVIE_BUNDLE_KEY = "MOVIE_KEY";
 
-    private ImageView mBackdrop;
-    private ImageView mPosterThumbnail;
-    private TextView mMovieRating;
-    private TextView mDateReleased;
-    private TextView mSinopsys;
+    @BindView(R.id.iv_movie_backdrop) ImageView mBackdrop;
+    @BindView(R.id.iv_movie_poster_thumbnail) ImageView mPosterThumbnail;
+    @BindView(R.id.tv_rating) TextView mMovieRating;
+    @BindView(R.id.tv_date_released) TextView mDateReleased;
+    @BindView(R.id.tv_synopsis) TextView mSinopsys;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
-        Movie movie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
+        ButterKnife.bind(this);
 
-        mBackdrop = findViewById(R.id.iv_movie_backdrop);
-        mPosterThumbnail = findViewById(R.id.iv_movie_poster_thumbnail);
-        mMovieRating = findViewById(R.id.tv_rating);
-        mDateReleased = findViewById(R.id.tv_date_released);
-        mSinopsys = findViewById(R.id.tv_synopsis);
+        Movie movie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
 
         setTitle(movie.getTitle());
         Picasso.with(this).load(movie.getBackDropPath()).into(mBackdrop);

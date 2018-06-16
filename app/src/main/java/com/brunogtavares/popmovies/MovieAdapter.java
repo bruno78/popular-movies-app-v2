@@ -12,6 +12,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by brunogtavares on 5/19/18.
  * Read about parcelable: http://www.vogella.com/tutorials/AndroidParcelable/article.html
@@ -38,11 +41,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         implements View.OnClickListener {
 
 
-        public ImageView mMovieImageView;
+        @BindView(R.id.iv_movie_poster) ImageView mMovieImageView;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
-            mMovieImageView = itemView.findViewById(R.id.iv_movie_poster);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 

@@ -25,6 +25,9 @@ import com.brunogtavares.popmovies.model.Movie;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MoviesActivity extends AppCompatActivity
     implements LoaderManager.LoaderCallbacks<List<Movie>>, MovieAdapter.MovieAdapterOnClickHandler {
 
@@ -33,10 +36,11 @@ public class MoviesActivity extends AppCompatActivity
     private static final String MOVIES_REQUEST_URL = "https://api.themoviedb.org/3/movie/";
     private static final int MOVIE_LOADER_ID = 1;
 
-    private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
-    private TextView mErrorMessageDisplay;
-    private ProgressBar mLoadingIndicator;
+
+    @BindView(R.id.rv_movie_list) RecyclerView mRecyclerView;
+    @BindView(R.id.tv_empty_view) TextView mErrorMessageDisplay;
+    @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
 
     @Override
@@ -44,12 +48,7 @@ public class MoviesActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
 
-
-        // Find the reference to the ListView in the layout
-        mRecyclerView = findViewById(R.id.rv_movie_list);
-
-        // Find the reference to the Error view layout
-        mErrorMessageDisplay = findViewById(R.id.tv_empty_view);
+        ButterKnife.bind(this);
 
         // Creating GridLayout to populate the movies as grid
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
@@ -71,9 +70,6 @@ public class MoviesActivity extends AppCompatActivity
         // Set the adapter on the RecyclerView
         // so the list can be populated in the user interface
         mRecyclerView.setAdapter(mMovieAdapter);
-
-        // Initialize the loading indicator
-        mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
 
         populateMovieList();
 
