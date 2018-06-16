@@ -20,129 +20,64 @@ the project, click "run" and choose an emulator.
 
 This is Stage 2 of the Popular Movies App, for Stage 1, click [here](https://github.com/bruno78/popular-movies-app).
 
-## Stage 1:  Main Discovery Screen, A Details View, and Settings
+## Stage 1: Main Discovery Screen, A Details View, and Settings
+
+See Stage 1 details [here](https://github.com/bruno78/popular-movies-app)
+
+## Stage 2: Trailers, Reviews, and Favorites 
+
 ### User Experience
 
-In this stage you’ll build the core experience of your movies app.
+In this stage you’ll add additional functionality to the app you built in [Stage 1](https://github.com/bruno78/popular-movies-app).
 
+You’ll add more information to your movie details view:
 
-Your app will:
-
-* Upon launch, present the user with an grid arrangement of movie posters.
-* Allow your user to change sort order via a setting:
-    * The sort order can be by most popular, or by top rated
-* Allow the user to tap on a movie poster and transition to a details screen with additional information such as:
-    * original title
-    * movie poster image thumbnail
-    * A plot synopsis (called overview in the api)
-    * user rating (called vote_average in the api)
-    * release date
+* You’ll allow users to view and play trailers ( either in the youtube app or a web browser).
+* You’ll allow users to read reviews of a selected movie.
+* You’ll also allow users to mark a movie as a favorite in the details view by tapping a button(star). This is for a local movies collection that you will maintain and does not require an API request*.
+* You’ll modify the existing sorting criteria for the main view to include an additional pivot to show their favorites collection.
 
 ## Rubric
 
 ### Common Project Requirements
 
 - [x] App is written solely in the Java Programming Language.
-- [x] Movies are displayed in the main layout via a grid of their corresponding movie poster thumbnails.
-- [x] UI contains an element (i.e a spinner or settings menu) to toggle the sort order of the movies by: most popular, highest rated.
-- [x] UI contains a screen for displaying the details for a selected movie.
-- [x] Movie details layout contains title, release date, movie poster, vote average, and plot synopsis.
+- [x] App conforms to common standards found in the [Android Nanodegree General Project Guidelines.](http://udacity.github.io/android-nanodegree-guidelines/core.html)
 - [x] App utilizes stable release versions of all libraries, Gradle, and Android Studio.
+- [x] User Interface - Layout
+
+### User Interface - Layout
+
+- [x] UI contains an element (e.g., a spinner or settings menu) to toggle the sort order of the movies by: most popular, highest rated.
+- [x] Movies are displayed in the main layout via a grid of their corresponding movie poster thumbnails.
+- [x] UI contains a screen for displaying the details for a selected movie.
+- [x] Movie Details layout contains title, release date, movie poster, vote average, and plot synopsis.
+- [ ] Movie Details layout contains a section for displaying trailer videos and user reviews.
 
 ### User Interface - Function
 
-- [x] When a user changes the sort criteria (“most popular and highest rated”) the main view gets updated correctly.
-- [x] When a movie poster thumbnail is selected, the movie details screen is launched.
+- [ ] When a user changes the sort criteria (most popular, highest rated, and favorites) the main view gets updated correctly.
+- [ ] When a movie poster thumbnail is selected, the movie details screen is launched.
+- [ ] When a trailer is selected, app uses an Intent to launch the trailer.
+- [ ] In the movies detail screen, a user can tap a button (for example, a star) to mark it as a Favorite. Tap the button on a favorite movie will unfavorite it.
 
 ### Network API Implementation
 
-- [x] In a background thread, app queries the /movie/popular or /movie/top_rated API for the sort 
-criteria specified in the settings menu.
+- [ ] In a background thread, app queries the /movie/popular or /movie/top_rated API for the sort criteria specified in the settings menu.
+- [ ] App requests for related videos for a selected movie via the /movie/{id}/videos endpoint in a background thread and displays those details when the user selects a movie.
+- [ ] App requests for user reviews for a selected movie via the /movie/{id}/reviews endpoint in a background thread and displays those details when the user selects a movie.
 
-### General Project Guidelines
+### Data Persistence
 
-- [x] App conforms to common standards found in the Android Nanodegree General Project Guidelines 
-(NOTE: For Stage 1 of the Popular Movies App, it is okay if the app does not restore the data using 
-onSaveInstanceState/onRestoreInstanceState)
+- [ ] The titles and IDs of the user’s favorite movies are stored in a native SQLite database and exposed via a ContentProvider OR stored using Room.
+- [ ] Data is updated whenever the user favorites or unfavorites a movie. No other persistence libraries are used.
+- [ ] When the "favorites" setting option is selected, the main view displays the entire favorites collection based on movie ids stored in the database.
+
+### Android Architecture Components
+
+- [ ] If Room is used, database is not re-queried unnecessarily. LiveData is used to observe changes in the database and update the UI accordingly.
+- [ ] If Room is used, database is not re-queried unnecessarily after rotation. Cached LiveData from ViewModel is used instead.
 
 ### Problems faced:
-
-1. When scroll down the list, it goes a bit slow but ok, but when goes up, it skips and jumps to the top. 
-
-**Solution:** Add these lines in the MoviesActivity:
-
-```java
-    recyclerView.setHasFixedSize(true);
-    recyclerView.setItemViewCacheSize(20);
-    recyclerView.setDrawingCacheEnabled(true);
-    recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-```
-
-and if you are using Picasso and still have these issues, add the commented lines:
-
-```java
-    Picasso.with(context)
-            .load(file)
-            .fit()
-            // .resize().centerCrop() // this is optional in case needs improvement
-            .into(imageView);
-```
-
-2. Back button on the Action bar in the Settings menu wasn't refreshing with the new list when settings changed
-
-**Solution:** Remove `android:launchMode="singleTop"` from MainActivity section in the AndroidManifest.xml 
-
-3. Add back button to a Action bar:
-
-**Solution:** Add these lines inside of your child Activity:
-```xml
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.brunogtavares.popmovies.MoviesActivity"/>
-```
-
-4. Extra space on the right of the each poster when displaying the movie grid list:
-
-**Solution:** make sure the FrameLayout that wraps the ImageView related to poster has the margin
-and padding set to 0.
-
-## Suggestions to improve the code
-
-**1. (/res/values/secrets.xml)** There is a nice approach when sharing your source code and don't want to include an API key or 
-any other private data. It is to use a buildConfig property, so other developers can include their 
-own key in the gradle.properties. This has some advantages like project won't build/run if a developer 
-has not set an API key value besides that you can handle different api keys during building time 
-depending on the build flavor like debug, release, etc
-   
-Here is a link to do this in a few easy steps:
-
-https://richardroseblog.wordpress.com/2016/05/29/hiding-secret-api-keys-from-git/
-
-**2. (MovieDetailActivity.java)** You might want to use ButterKnife library to reduce boilerplate code initializing the 
-views. You can easily bind these views using annotations provided by this library.
-   
-For example:
-   
-(code snippet gotten from the official Butterknife documentation)
-
-```java
-  class ExampleActivity extends Activity {
-     @BindView(R.id.title) TextView title;
-     @BindView(R.id.subtitle) TextView subtitle;
-     @BindView(R.id.footer) TextView footer;
-   
-     @Override public void onCreate(Bundle savedInstanceState) {
-       super.onCreate(savedInstanceState);
-       setContentView(R.layout.simple_activity);
-       ButterKnife.bind(this);
-       // TODO Use fields...
-     }
-   }
-
-```  
-
-Take a look at the official documentation of this library:
-
-http://jakewharton.github.io/butterknife/
 
 

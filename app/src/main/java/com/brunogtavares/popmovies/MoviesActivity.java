@@ -139,7 +139,7 @@ public class MoviesActivity extends AppCompatActivity
 
     private Uri.Builder createUri(String sortBy) {
 
-        String apiKey = getString(R.string.movie_api_key);
+        String apiKey = BuildConfig.MOVIE_API_KEY;
 
         Uri baseUri = Uri.parse(MOVIES_REQUEST_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
@@ -185,6 +185,12 @@ public class MoviesActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<List<Movie>> loader) {
+        resetAdapter();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         resetAdapter();
     }
 }
