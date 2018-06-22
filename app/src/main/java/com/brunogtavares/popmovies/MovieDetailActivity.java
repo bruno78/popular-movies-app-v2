@@ -34,7 +34,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         Picasso.with(this).load(movie.getBackDropPath()).into(mBackdrop);
         Picasso.with(this).load(movie.getPosterPath()).into(mPosterThumbnail);
         mMovieRating.setText(Double.toString(movie.getRating()) + "/10");
-        mDateReleased.setText(movie.getReleaseDate().replaceAll("-", " "));
+        mDateReleased.setText(movie.getReleaseDate().split("-")[0]);
         mSinopsys.setText(movie.getSynopsis());
 
     }
