@@ -1,5 +1,7 @@
 package com.brunogtavares.popmovies.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,8 +11,10 @@ import android.os.Parcelable;
  * Using Parcelable {@link: http://www.vogella.com/tutorials/AndroidParcelable/article.html}
  */
 
+@Entity(tableName = "movie")
 public class Movie implements Parcelable {
 
+    @PrimaryKey
     private int movieId;
     private String title;
     private String posterPath;
