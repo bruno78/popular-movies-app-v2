@@ -2,18 +2,22 @@ package com.brunogtavares.popmovies.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 /**
  * Created by brunogtavares on 6/22/18.
+ * JSON structure
+
  */
 
 @Entity(foreignKeys = @ForeignKey(entity = Movie.class,
                                     parentColumns = "movieId",
                                     childColumns = "movieId",
-                                    onDelete = CASCADE))
+                                    onDelete = CASCADE),
+           indices = {@Index("movieId")})
 public class Review {
 
     @PrimaryKey(autoGenerate = true)

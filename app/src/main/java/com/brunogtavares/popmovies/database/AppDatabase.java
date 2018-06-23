@@ -28,10 +28,13 @@ public abstract class AppDatabase extends RoomDatabase {
                 Log.d(TAG, "Creating new database instance");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         AppDatabase.class, AppDatabase.DATABASE_NAME)
+                        // Temporarily allow thread on the main query
                         .allowMainThreadQueries().build();
             }
         }
         Log.d(TAG, "Getting the database instance");
         return sInstance;
     }
+
+    public abstract MovieDao movieDao();
 }

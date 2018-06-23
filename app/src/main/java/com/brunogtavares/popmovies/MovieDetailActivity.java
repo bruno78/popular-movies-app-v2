@@ -3,6 +3,7 @@ package com.brunogtavares.popmovies;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +25,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.tv_rating) TextView mMovieRating;
     @BindView(R.id.tv_date_released) TextView mDateReleased;
     @BindView(R.id.tv_synopsis) TextView mSinopsys;
-    @BindView(R.id.fab_save_favorites) FloatingActionButton addFavorites;
+    @BindView(R.id.fab_save_favorites) FloatingActionButton mAddFavoritesButton;
+
+    private Movie mMovie;
 
     // Database
     private AppDatabase mDb;
@@ -38,24 +41,29 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         mDb = AppDatabase.getsInstance(getApplicationContext());
 
-
         populateUI();
+
     }
 
     private void populateUI(){
-        Movie movie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
+        mMovie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
+        // Needs to get movie id and pass as parameter to get the review
+        // and trailers
 
-        setTitle(movie.getTitle());
-        Picasso.with(this).load(movie.getBackDropPath()).into(mBackdrop);
-        Picasso.with(this).load(movie.getPosterPath()).into(mPosterThumbnail);
-        mMovieRating.setText(Double.toString(movie.getRating()) + "/10");
-        mDateReleased.setText(movie.getReleaseDate().split("-")[0]);
-        mSinopsys.setText(movie.getSynopsis());
+        setTitle(mMovie.getTitle());
+        Picasso.with(this).load(mMovie.getBackDropPath()).into(mBackdrop);
+        Picasso.with(this).load(mMovie.getPosterPath()).into(mPosterThumbnail);
+        mMovieRating.setText(Double.toString(mMovie.getRating()) + "/10");
+        mDateReleased.setText(mMovie.getReleaseDate().split("-")[0]);
+        mSinopsys.setText(mMovie.getSynopsis());
     }
 
     @OnClick(R.id.fab_save_favorites)
     public void addFavorites() {
-        Toast.makeText(MovieDetailActivity.this, "It's working!", Toast.LENGTH_SHORT);
+        mDb.movieDao().insert(mMovie);
+        Toast.makeText(MovieDetailActivity.this,
+                "Successfully added to favorites", Toast.LENGTH_SHORT).show();
+        mAddFavoritesButton.setColorFilter(R.color.goldStar);
     }
 
 }
