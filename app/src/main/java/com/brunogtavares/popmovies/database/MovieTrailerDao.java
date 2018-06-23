@@ -19,6 +19,6 @@ public interface MovieTrailerDao {
     @Delete
     void deleteMovieTrailer(MovieTrailer... movieTrailers);
 
-    @Query("SELECT * FROM movietrailer WHERE movieId=:movieId")
-    void loadAllMovieTrailersForMovie(final int movieId);
+    @Query("SELECT * FROM movietrailer WHERE movieId=:movieId LIMIT :limit")
+    void loadAllMovieTrailersForMovie(final int movieId, final int limit);
 }

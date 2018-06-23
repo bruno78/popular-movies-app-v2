@@ -21,6 +21,6 @@ public interface ReviewDao {
     @Delete
     void deletRview(Review... reviews);
 
-    @Query("SELECT * FROM review WHERE movieId=:movieId")
-    List<Review> loadAllReviewsForMovie(final int movieId);
+    @Query("SELECT * FROM review WHERE movieId = :movieId LIMIT :limit")
+    List<Review> loadAllReviewsForMovie(final int movieId, final int limit);
 }
