@@ -10,16 +10,37 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/iv_movie_backdrop"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/movie_backdrop"
-            tools:srcCompat="@drawable/backdrop" />
+            <ImageView
+                android:id="@+id/iv_movie_backdrop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/movie_backdrop"
+                tools:srcCompat="@drawable/backdrop" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_save_favorites"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:fabSize="mini"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="23dp"
+                android:scaleType="center"
+                android:tint="@android:color/white"
+                app:srcCompat="@drawable/ic_favorite_black_24dp" />
+
+        </RelativeLayout>
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -103,6 +124,15 @@
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 tools:text="@string/large_text" />
+
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"/>
+
     </LinearLayout>
 </ScrollView>

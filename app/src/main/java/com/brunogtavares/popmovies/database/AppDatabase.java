@@ -27,7 +27,8 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (LOCK) {
                 Log.d(TAG, "Creating new database instance");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
-                        AppDatabase.class, AppDatabase.DATABASE_NAME).build();
+                        AppDatabase.class, AppDatabase.DATABASE_NAME)
+                        .allowMainThreadQueries().build();
             }
         }
         Log.d(TAG, "Getting the database instance");
