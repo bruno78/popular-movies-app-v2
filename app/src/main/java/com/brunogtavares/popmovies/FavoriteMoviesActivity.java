@@ -1,6 +1,8 @@
 package com.brunogtavares.popmovies;
 
 import android.app.LoaderManager;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
@@ -10,6 +12,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -84,26 +87,18 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements MovieAd
         // populateMovieList();
 
         mDb = AppDatabase.getsInstance(getApplicationContext());
+        retrieveMovies();
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+    private void retrieveMovies() {
+        final LiveData<List<Movie>> favoriteMovies = mDb.movieDao().getAllMovies();
+        favoriteMovies.observe(this, new Observer<List<Movie>>() {
             @Override
-            public void run() {
-                final List<Movie> favoriteMovies = mDb.movieDao().getAllMovies();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMovieAdapter.setMovieList(favoriteMovies);
-                    }
-                });
-
+            public void onChanged(@Nullable List<Movie> movies) {
+                mMovieAdapter.setMovieList(movies);
             }
         });
-
     }
 
 //    // Creates the menu

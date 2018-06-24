@@ -174,12 +174,12 @@ public class MoviesActivity extends AppCompatActivity
         resetAdapter();
 
         // If movies is not empty or null populate the adapter
-        if(!movies.isEmpty()) {
+        if(!movies.isEmpty() || movies != null) {
             mMovieAdapter.setMovieList(movies);
             mRecyclerView.setAdapter(mMovieAdapter);
         }
         else {
-            // Set empty state text to display "No earthquakes found."
+            // Set empty state text to display "No movies found."
             mErrorMessageDisplay.setText(R.string.no_movies);
         }
     }
