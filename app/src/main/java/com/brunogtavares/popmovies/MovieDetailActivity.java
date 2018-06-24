@@ -1,6 +1,8 @@
 package com.brunogtavares.popmovies;
 
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -56,14 +58,57 @@ public class MovieDetailActivity extends AppCompatActivity {
         mMovieRating.setText(Double.toString(mMovie.getRating()) + "/10");
         mDateReleased.setText(mMovie.getReleaseDate().split("-")[0]);
         mSinopsys.setText(mMovie.getSynopsis());
+
+        setColorFavoriteButton();
+
+
     }
 
     @OnClick(R.id.fab_save_favorites)
     public void addFavorites() {
-        mDb.movieDao().insert(mMovie);
-        Toast.makeText(MovieDetailActivity.this,
-                "Successfully added to favorites", Toast.LENGTH_SHORT).show();
-        mAddFavoritesButton.setColorFilter(R.color.goldStar);
+
+        AppExecutors task = AppExecutors.getInstance();
+
+        if (mMovie.isFavorite()) {
+
+            mMovie.setFavorite(false);
+            setColorFavoriteButton();
+
+            task.diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.movieDao().delete(mMovie);
+                }
+            });
+            Toast.makeText(MovieDetailActivity.this,
+                    "Successfully removed from favorites", Toast.LENGTH_SHORT).show();
+        }
+        else {
+
+            mMovie.setFavorite(true);
+            setColorFavoriteButton();
+
+            task.diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.movieDao().insert(mMovie);
+                }
+            });
+            Toast.makeText(MovieDetailActivity.this,
+                    "Successfully added to favorites", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+    private void setColorFavoriteButton() {
+        if (mMovie.isFavorite()) {
+           int goldColor = ResourcesCompat.getColor(getResources(), R.color.goldStar, null);
+           mAddFavoritesButton.setColorFilter(goldColor);
+        }
+        else {
+            mAddFavoritesButton.setColorFilter(Color.WHITE);
+        }
     }
 
 }

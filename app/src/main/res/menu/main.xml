@@ -8,4 +8,11 @@
         android:icon="@drawable/ic_filter"
         android:orderInCategory="1"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_favorites"
+        android:title="favorites"
+        android:icon="@drawable/ic_favorite_black_24dp"
+        android:iconTint="@android:color/white"
+        android:orderInCategory="1"
+        app:showAsAction="ifRoom" />
 </menu>

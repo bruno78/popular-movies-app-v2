@@ -32,6 +32,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.brunogtavares.popmovies.MoviesActivity"/>
         </activity>
+        <activity
+            android:name=".FavoriteMoviesActivity"
+            android:label="Favorite Movies">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.brunogtavares.popmovies.MoviesActivity"/>
+        </activity>
     </application>
 
 </manifest>

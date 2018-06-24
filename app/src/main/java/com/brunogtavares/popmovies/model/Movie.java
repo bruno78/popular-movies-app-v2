@@ -22,6 +22,7 @@ public class Movie implements Parcelable {
     private String synopsis;
     private double rating;
     private String releaseDate;
+    private boolean favorite;
 
     public Movie( int movieId, String title, String posterPath, String backDropPath,
                   String synopsis, double rating, String releaseDate ) {
@@ -32,6 +33,7 @@ public class Movie implements Parcelable {
         this.synopsis = synopsis;
         this.rating = rating;
         this.releaseDate = releaseDate;
+        this.favorite = false;
     }
 
     public int getMovieId() { return movieId; }
@@ -82,6 +84,14 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
     @Override
     public String toString() {
         return "{" + "\n" +
@@ -92,6 +102,7 @@ public class Movie implements Parcelable {
                 "synopsis: " + getSynopsis() + "\n" +
                 "average rating: " + getRating() + "\n" +
                 "release date: " + getReleaseDate() + "\n" +
+                "is favorite: " + isFavorite() + "\n" +
                 "}";
     }
 
@@ -116,6 +127,7 @@ public class Movie implements Parcelable {
         synopsis = in.readString();
         releaseDate = in.readString();
         rating = in.readDouble();
+        favorite = in.readByte() != 0;
     }
 
     @Override
@@ -132,5 +144,6 @@ public class Movie implements Parcelable {
         parcel.writeString(synopsis);
         parcel.writeString(releaseDate);
         parcel.writeDouble(rating);
+        parcel.writeByte((byte) (favorite ? 1 : 0));
     }
 }

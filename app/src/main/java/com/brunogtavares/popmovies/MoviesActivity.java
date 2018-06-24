@@ -91,6 +91,11 @@ public class MoviesActivity extends AppCompatActivity
             startActivity(settingsIntent);
             return true;
         }
+        if( id == R.id.action_favorites) {
+            Intent favoritesIntent = new Intent(this, FavoriteMoviesActivity.class);
+            startActivity(favoritesIntent);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
