@@ -19,13 +19,12 @@ public class MoviesViewModel extends AndroidViewModel {
     private static final String MOVIES_REQUEST_URL = "https://api.themoviedb.org/3/movie/";
 
     private LiveData<List<Movie>> mMoviesDb;
-    private LiveData<List<Movie>> mMovies;
+    private List<Movie> mMovies;
 
     public MoviesViewModel(@NonNull Application application) {
         super(application);
         AppDatabase database = AppDatabase.getsInstance(this.getApplication());
         mMoviesDb = database.movieDao().getAllMovies();
-
     }
 
     public LiveData<List<Movie>> getMoviesDb() {

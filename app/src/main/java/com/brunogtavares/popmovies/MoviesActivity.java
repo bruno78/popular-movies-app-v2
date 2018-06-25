@@ -28,6 +28,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.brunogtavares.popmovies.utils.NetworkUtils.checkForNetworkStatus;
+import static com.brunogtavares.popmovies.utils.NetworkUtils.createRequestUri;
+
 public class MoviesActivity extends AppCompatActivity
     implements LoaderManager.LoaderCallbacks<List<Movie>>, MovieAdapter.MovieAdapterOnClickHandler {
 
@@ -107,18 +110,10 @@ public class MoviesActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    private boolean checkForNetworkStatus() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        assert cm != null;
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
-        return activeNetwork != null && activeNetwork.isConnected();
-    }
-
     private void populateMovieList() {
 
         // Before populating the list, check for the network status
-        boolean isConnected = checkForNetworkStatus();
+        boolean isConnected = checkForNetworkStatus(this);
         // If it's connected it will call the load manager otherwise will display no connection message
         if (isConnected) {
             // Start Loader Manager
@@ -138,18 +133,6 @@ public class MoviesActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mMovieAdapter);
     }
 
-    private Uri.Builder createUri(String sortBy) {
-
-        String apiKey = BuildConfig.MOVIE_API_KEY;
-
-        Uri baseUri = Uri.parse(MOVIES_REQUEST_URL);
-        Uri.Builder uriBuilder = baseUri.buildUpon();
-
-        uriBuilder.appendPath(sortBy);
-        uriBuilder.appendQueryParameter("api_key", apiKey);
-
-        return uriBuilder;
-    }
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
@@ -159,7 +142,7 @@ public class MoviesActivity extends AppCompatActivity
                 getString(R.string.settings_order_by_key),
                 getString(R.string.settings_order_by_default));
 
-        Uri.Builder  uri = createUri(orderBy);
+        Uri.Builder  uri = createRequestUri(orderBy, MOVIES_REQUEST_URL);
 
         return new MoviesLoader(this, uri.toString());
     }
@@ -174,7 +157,7 @@ public class MoviesActivity extends AppCompatActivity
         resetAdapter();
 
         // If movies is not empty or null populate the adapter
-        if(!movies.isEmpty() || movies != null) {
+        if(!movies.isEmpty()) {
             mMovieAdapter.setMovieList(movies);
             mRecyclerView.setAdapter(mMovieAdapter);
         }
