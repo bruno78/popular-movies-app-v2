@@ -1,5 +1,6 @@
 package com.brunogtavares.popmovies;
 
+import android.arch.lifecycle.LiveData;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.res.ResourcesCompat;
@@ -30,9 +31,12 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.fab_save_favorites) FloatingActionButton mAddFavoritesButton;
 
     private Movie mMovie;
+    private Movie mMovieDb;
 
     // Database
     private AppDatabase mDb;
+
+    private AppExecutors mTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,24 +44,33 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
 
         ButterKnife.bind(this);
-
+        mTask = AppExecutors.getInstance();
         mDb = AppDatabase.getsInstance(getApplicationContext());
+        mMovie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
+        mTask.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mMovieDb = mDb.movieDao().getMovieById(mMovie.getMovieId()).getValue();
+            }
+        });
 
-        populateUI();
-
+        if (mMovieDb != null) {
+            mMovie = mMovieDb;
+        }
+        populateUI(mMovie);
     }
 
-    private void populateUI(){
-        mMovie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
-        // Needs to get movie id and pass as parameter to get the review
+    private void populateUI(Movie movie){
+
+        // TODO Needs to get movie id and pass as parameter to get the review
         // and trailers
 
-        setTitle(mMovie.getTitle());
-        Picasso.with(this).load(mMovie.getBackDropPath()).into(mBackdrop);
-        Picasso.with(this).load(mMovie.getPosterPath()).into(mPosterThumbnail);
+        setTitle(movie.getTitle());
+        Picasso.with(this).load(movie.getBackDropPath()).into(mBackdrop);
+        Picasso.with(this).load(movie.getPosterPath()).into(mPosterThumbnail);
         mMovieRating.setText(Double.toString(mMovie.getRating()) + "/10");
-        mDateReleased.setText(mMovie.getReleaseDate().split("-")[0]);
-        mSinopsys.setText(mMovie.getSynopsis());
+        mDateReleased.setText(movie.getReleaseDate().split("-")[0]);
+        mSinopsys.setText(movie.getSynopsis());
 
         setColorFavoriteButton();
 
@@ -67,14 +80,12 @@ public class MovieDetailActivity extends AppCompatActivity {
     @OnClick(R.id.fab_save_favorites)
     public void addFavorites() {
 
-        AppExecutors task = AppExecutors.getInstance();
-
         if (mMovie.isFavorite()) {
 
             mMovie.setFavorite(false);
             setColorFavoriteButton();
 
-            task.diskIO().execute(new Runnable() {
+            mTask.diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
                     mDb.movieDao().delete(mMovie);
@@ -88,7 +99,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             mMovie.setFavorite(true);
             setColorFavoriteButton();
 
-            task.diskIO().execute(new Runnable() {
+            mTask.diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
                     mDb.movieDao().insert(mMovie);

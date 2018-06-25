@@ -35,6 +35,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.brunogtavares.popmovies.utils.NetworkUtils.checkForNetworkStatus;
+import static com.brunogtavares.popmovies.utils.NetworkUtils.createRequestUri;
+
 public class MoviesActivity extends AppCompatActivity
     implements MovieAdapter.MovieAdapterOnClickHandler,
     LoaderManager.LoaderCallbacks<List<Movie>> {
@@ -131,8 +134,7 @@ public class MoviesActivity extends AppCompatActivity
     }
 
 
-
-    private void populateMovieList() {
+   // private void populateMovieList() {
 
         // Before populating the list, check for the network status
 //        boolean isConnected = NetworkUtils.checkForNetworkStatus(this);
@@ -169,7 +171,12 @@ public class MoviesActivity extends AppCompatActivity
 
 
         // Before populating the list, check for the network status
-        boolean isConnected = NetworkUtils.checkForNetworkStatus(this);
+        // boolean isConnected = NetworkUtils.checkForNetworkStatus(this);
+
+    private void populateMovieList() {
+
+        // Before populating the list, check for the network status
+        boolean isConnected = checkForNetworkStatus(this);
         // If it's connected it will call the load manager otherwise will display no connection message
         if (isConnected) {
             // Start Loader Manager
@@ -189,8 +196,6 @@ public class MoviesActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mMovieAdapter);
     }
 
-
-
     @Override
     public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
 
@@ -200,6 +205,7 @@ public class MoviesActivity extends AppCompatActivity
                 getString(R.string.settings_order_by_default));
 
         Uri.Builder uri = NetworkUtils.createRequestUri(orderBy);
+
         return new MoviesLoader(this, uri.toString());
     }
 
@@ -213,7 +219,7 @@ public class MoviesActivity extends AppCompatActivity
         resetAdapter();
 
         // If movies is not empty or null populate the adapter
-        if(!movies.isEmpty() || movies != null) {
+        if(!movies.isEmpty()) {
             mMovieAdapter.setMovieList(movies);
             mRecyclerView.setAdapter(mMovieAdapter);
         }
