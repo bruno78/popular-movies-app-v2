@@ -5,7 +5,6 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
-import com.brunogtavares.popmovies.database.AppDatabase;
 import com.brunogtavares.popmovies.model.Movie;
 
 import java.util.List;
@@ -16,19 +15,39 @@ import java.util.List;
 
 public class MoviesViewModel extends AndroidViewModel {
 
-    private static final String MOVIES_REQUEST_URL = "https://api.themoviedb.org/3/movie/";
+    private final MovieRepository mMovieRepository;
 
-    private LiveData<List<Movie>> mMoviesDb;
-    private LiveData<List<Movie>> mMovies;
+    private LiveData<List<Movie>> mAllFavoriteMovies;
+
+    private List<Movie> mAllMoviesApi;
 
     public MoviesViewModel(@NonNull Application application) {
         super(application);
-        AppDatabase database = AppDatabase.getsInstance(this.getApplication());
-        mMoviesDb = database.movieDao().getAllMovies();
 
+        mMovieRepository = new MovieRepository(application);
+
+        mAllFavoriteMovies = mMovieRepository.getAllFavoriteMovies();
+
+        mAllMoviesApi = mMovieRepository.getAllPopularMovies();
     }
 
-    public LiveData<List<Movie>> getMoviesDb() {
-        return mMoviesDb;
+    public LiveData<List<Movie>> getAllFavoriteMovies() {
+        return mAllFavoriteMovies;
+    }
+
+    public void insertFavoriteMovie(Movie movie) {
+        mMovieRepository.insertFavoriteMovieFromDb(movie);
+    }
+
+    public void deleteFavoriteMovie(Movie movie) {
+        mMovieRepository.deleteFavoriteMovieFromDb(movie);
+    }
+
+    public List<Movie> getAllMoviesApi() {
+        return mAllMoviesApi;
+    }
+
+    public List<Movie> getAllMoviesSortedBy(String sort) {
+        return mMovieRepository.getAllMoviesApiBySort(sort);
     }
 }

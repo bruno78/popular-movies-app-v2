@@ -101,118 +101,11 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements MovieAd
         });
     }
 
-//    // Creates the menu
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
-//
-//    // Handles the options selected in the menu
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.action_settings) {
-//            Intent settingsIntent = new Intent(this, SettingsActivity.class);
-//            startActivity(settingsIntent);
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-    // Handles when user click on menu poster
     @Override
     public void onClick(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(MOVIE_BUNDLE_KEY, movie);
         startActivity(intent);
     }
-//
-//    private boolean checkForNetworkStatus() {
-//        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        assert cm != null;
-//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-//
-//        return activeNetwork != null && activeNetwork.isConnected();
-//    }
-//
-//    private void populateMovieList() {
-//
-//        // Before populating the list, check for the network status
-//        boolean isConnected = checkForNetworkStatus();
-//        // If it's connected it will call the load manager otherwise will display no connection message
-//        if (isConnected) {
-//            // Start Loader Manager
-//            getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
-//        }
-//        else {
-//            mLoadingIndicator.setVisibility(View.GONE);
-//            // Update empty state with no connection error message
-//            mErrorMessageDisplay.setText(R.string.no_connection);
-//        }
-//
-//    }
-//
-//    private void resetAdapter() {
-//        // Create a new adapter with an empty movie list
-//        mMovieAdapter.setMovieList(new ArrayList<Movie>());
-//        mRecyclerView.setAdapter(mMovieAdapter);
-//    }
-//
-//    private Uri.Builder createUri(String sortBy) {
-//
-//        String apiKey = BuildConfig.MOVIE_API_KEY;
-//
-//        Uri baseUri = Uri.parse(MOVIES_REQUEST_URL);
-//        Uri.Builder uriBuilder = baseUri.buildUpon();
-//
-//        uriBuilder.appendPath(sortBy);
-//        uriBuilder.appendQueryParameter("api_key", apiKey);
-//
-//        return uriBuilder;
-//    }
-//
-//    @Override
-//    public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
-//
-//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        String orderBy = sharedPrefs.getString(
-//                getString(R.string.settings_order_by_key),
-//                getString(R.string.settings_order_by_default));
-//
-//        Uri.Builder  uri = createUri(orderBy);
-//
-//        return new MoviesLoader(this, uri.toString());
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
-//
-//        // set the invisibility of the Progress bar to invisible
-//        mLoadingIndicator.setVisibility(View.GONE);
-//
-//        // Clear the adapter from previous data
-//        resetAdapter();
-//
-//        // If movies is not empty or null populate the adapter
-//        if(!movies.isEmpty()) {
-//            mMovieAdapter.setMovieList(movies);
-//            mRecyclerView.setAdapter(mMovieAdapter);
-//        }
-//        else {
-//            // Set empty state text to display "No earthquakes found."
-//            mErrorMessageDisplay.setText(R.string.no_movies);
-//        }
-//    }
-//
-//    @Override
-//    public void onLoaderReset(Loader<List<Movie>> loader) {
-//        resetAdapter();
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        resetAdapter();
-//    }
+
 }

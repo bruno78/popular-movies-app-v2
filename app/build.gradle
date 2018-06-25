@@ -57,10 +57,4 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version"
 
-    // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-
-    // HttpOK
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-
 }

@@ -1,6 +1,9 @@
 package com.brunogtavares.popmovies;
 
 import android.app.LoaderManager;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
@@ -8,7 +11,9 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -20,7 +25,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.brunogtavares.popmovies.database.AppDatabase;
 import com.brunogtavares.popmovies.model.Movie;
+import com.brunogtavares.popmovies.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +36,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MoviesActivity extends AppCompatActivity
-    implements LoaderManager.LoaderCallbacks<List<Movie>>, MovieAdapter.MovieAdapterOnClickHandler {
+    implements MovieAdapter.MovieAdapterOnClickHandler,
+    LoaderManager.LoaderCallbacks<List<Movie>> {
 
     private static final String LOG_TAG = MoviesActivity.class.getName();
     private static final String MOVIE_BUNDLE_KEY = "MOVIE_KEY";
@@ -42,6 +50,11 @@ public class MoviesActivity extends AppCompatActivity
     @BindView(R.id.tv_empty_view) TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
+    private AppDatabase mDb;
+
+    private MoviesViewModel mMoviesViewModel;
+
+    private List<Movie> mMovieListApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +83,10 @@ public class MoviesActivity extends AppCompatActivity
         // Set the adapter on the RecyclerView
         // so the list can be populated in the user interface
         mRecyclerView.setAdapter(mMovieAdapter);
+
+        // mMoviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
+
+        mDb = AppDatabase.getsInstance(getApplicationContext());
 
         populateMovieList();
 
@@ -102,23 +119,57 @@ public class MoviesActivity extends AppCompatActivity
     // Handles when user click on menu poster
     @Override
     public void onClick(Movie movie) {
+
+        setMovieToIntent(movie);
+
+    }
+
+    private void setMovieToIntent(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(MOVIE_BUNDLE_KEY, movie);
         startActivity(intent);
     }
 
-    private boolean checkForNetworkStatus() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        assert cm != null;
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
-        return activeNetwork != null && activeNetwork.isConnected();
-    }
 
     private void populateMovieList() {
 
         // Before populating the list, check for the network status
-        boolean isConnected = checkForNetworkStatus();
+//        boolean isConnected = NetworkUtils.checkForNetworkStatus(this);
+//        // If it's connected it will call the load manager otherwise will display no connection message
+//        if (isConnected) {
+//            // Start Loader Manager
+            // getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
+//
+//            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//            String orderBy = sharedPrefs.getString(
+//                getString(R.string.settings_order_by_key),
+//                getString(R.string.settings_order_by_default));
+//
+//
+//            mMovieListApi = mMoviesViewModel.getAllMoviesSortedBy(orderBy);
+//            // If movies is not empty or null populate the adapter
+//            if(mMovieListApi != null || !mMovieListApi.isEmpty()) {
+//                mMovieAdapter.setMovieList(mMovieListApi);
+//                mRecyclerView.setAdapter(mMovieAdapter);
+//            }
+//            else {
+//                // Set empty state text to display "No movies found."
+//                mErrorMessageDisplay.setText(R.string.no_movies);
+//            }
+//
+//
+//
+//        }
+//        else {
+//            mLoadingIndicator.setVisibility(View.GONE);
+//            // Update empty state with no connection error message
+//            mErrorMessageDisplay.setText(R.string.no_connection);
+//        }
+
+
+        // Before populating the list, check for the network status
+        boolean isConnected = NetworkUtils.checkForNetworkStatus(this);
         // If it's connected it will call the load manager otherwise will display no connection message
         if (isConnected) {
             // Start Loader Manager
@@ -138,18 +189,7 @@ public class MoviesActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mMovieAdapter);
     }
 
-    private Uri.Builder createUri(String sortBy) {
 
-        String apiKey = BuildConfig.MOVIE_API_KEY;
-
-        Uri baseUri = Uri.parse(MOVIES_REQUEST_URL);
-        Uri.Builder uriBuilder = baseUri.buildUpon();
-
-        uriBuilder.appendPath(sortBy);
-        uriBuilder.appendQueryParameter("api_key", apiKey);
-
-        return uriBuilder;
-    }
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
@@ -159,8 +199,7 @@ public class MoviesActivity extends AppCompatActivity
                 getString(R.string.settings_order_by_key),
                 getString(R.string.settings_order_by_default));
 
-        Uri.Builder  uri = createUri(orderBy);
-
+        Uri.Builder uri = NetworkUtils.createRequestUri(orderBy);
         return new MoviesLoader(this, uri.toString());
     }
 
