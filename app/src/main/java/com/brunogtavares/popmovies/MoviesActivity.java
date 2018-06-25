@@ -58,6 +58,7 @@ public class MoviesActivity extends AppCompatActivity
     private MoviesViewModel mMoviesViewModel;
 
     private List<Movie> mMovieListApi;
+    private List<Movie> mMovieListDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,14 @@ public class MoviesActivity extends AppCompatActivity
 
         mDb = AppDatabase.getsInstance(getApplicationContext());
 
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mMovieListDb = mDb.movieDao().getAllMovies().getValue();
+            }
+        });
+
+
         populateMovieList();
 
     }
@@ -122,7 +131,13 @@ public class MoviesActivity extends AppCompatActivity
     // Handles when user click on menu poster
     @Override
     public void onClick(Movie movie) {
-
+//        if(mMovieListDb.contains(movie)) {
+//            int position = mMovieListDb.indexOf(movie);
+//            setMovieToIntent(mMovieListDb.get(position));
+//        }
+//        else {
+//            setMovieToIntent(movie);
+//        }
         setMovieToIntent(movie);
 
     }
