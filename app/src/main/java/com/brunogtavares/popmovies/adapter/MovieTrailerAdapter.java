@@ -58,8 +58,6 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.rl_trailer_button) RelativeLayout movieTrailerButton;
-        @BindView(R.id.iv_movie_frame) ImageView mMovieFrame;
         @BindView(R.id.iv_movie_play) ImageView mMoviePlay;
         @BindView(R.id.tv_movie_trailer_label) TextView mMovieTrailerLabel;
 

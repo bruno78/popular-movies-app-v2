@@ -22,9 +22,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.brunogtavares.popmovies.adapter.MovieReviewAdapter;
 import com.brunogtavares.popmovies.adapter.MovieTrailerAdapter;
 import com.brunogtavares.popmovies.database.MovieDatabase;
 import com.brunogtavares.popmovies.model.Movie;
+import com.brunogtavares.popmovies.model.MovieReview;
 import com.brunogtavares.popmovies.model.MovieTrailer;
 import com.brunogtavares.popmovies.webservice.NetworkUtils;
 import com.brunogtavares.popmovies.webservice.ThemoviedbApiClient;
@@ -37,18 +39,29 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * MovieDetailActivity displays detail from each movie.
+ * It users two loaders one for the trailers and another from
+ * reviews. More info on loaders in the same activity:
+ * https://stackoverflow.com/questions/15643907/multiple-loaders-in-same-activity
+ */
 public class MovieDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<MovieTrailer>>, MovieTrailerAdapter.MovieTrailerOnClickHandler {
 
     private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
+
     private static final String MOVIE_BUNDLE_KEY = "MOVIE_KEY";
     private static final int MOVIE_TRAILERS_LOADER_ID = 101;
+    private static final int MOVIE_REVIEWS_LOADER_ID = 102;
 
     // This number will be adjustable for shared preferences later
     private static final int MOVIE_TRAILER_LIMIT = 3;
     private static final int MOVIE_REVIEW_LIMIT = 3;
 
-    private RecyclerView.LayoutManager mMovieTrailerRVLayoutManager;
+    private RecyclerView.LayoutManager mMovieTrailerRVLayoutManager, mMovieReviewRVLayoutManager;
     private MovieTrailerAdapter mMovieTrailerAdapter;
+    private MovieReviewAdapter mMovieReviewAdapter;
+
+    private static LoaderManager.LoaderCallbacks<List<MovieReview>> mReviewsLoaderListener;
 
     private static Parcelable mTrailerRvState;
     private static int[] scrollPositions;
@@ -60,6 +73,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     @BindView(R.id.tv_synopsis) TextView mSinopsys;
     @BindView(R.id.fab_favorites) FloatingActionButton mAddFavoritesButton;
     @BindView(R.id.rv_movie_trailer) RecyclerView mMovieTrailerRecyclerView;
+    @BindView(R.id.rv_movie_review) RecyclerView mMovieReviewRecyclerView;
     @BindView(R.id.sv_movie_detail) ScrollView mScrollView;
 
     private Movie mMovie;
@@ -84,9 +98,53 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         mMovieTrailerAdapter = new MovieTrailerAdapter(this);
         mMovieTrailerRecyclerView.setAdapter(mMovieTrailerAdapter);
 
+        mMovieReviewRVLayoutManager = new LinearLayoutManager(this);
+        mMovieReviewRecyclerView.setLayoutManager(mMovieReviewRVLayoutManager);
+        mMovieReviewRecyclerView.setHasFixedSize(true);
+        mMovieReviewAdapter = new MovieReviewAdapter();
+        mMovieReviewRecyclerView.setAdapter(mMovieReviewAdapter);
+
+        mReviewsLoaderListener = new LoaderManager.LoaderCallbacks<List<MovieReview>>() {
+            @Override
+            public Loader<List<MovieReview>> onCreateLoader(final int movieId, Bundle bundle) {
+                return new AsyncTaskLoader<List<MovieReview>>(MovieDetailActivity.this) {
+
+                    List<MovieReview> movieReviews = new ArrayList<>();
+
+                    @Override
+                    public List<MovieReview> loadInBackground() {
+
+                        movieReviews =
+                                ThemoviedbApiClient.getMovieReviews(mMovie.getMovieId(), MOVIE_REVIEW_LIMIT);
+                        return movieReviews;
+                    }
+
+                    @Override
+                    protected void onStartLoading() {
+                        forceLoad();
+                    }
+                };
+            }
+
+            @Override
+            public void onLoadFinished(Loader<List<MovieReview>> loader, List<MovieReview> movieReviews) {
+                Log.d(LOG_TAG, "" + movieReviews.size());
+                mMovieReviewAdapter.setMovieReviews(movieReviews);
+
+            }
+
+            @Override
+            public void onLoaderReset(Loader<List<MovieReview>> loader) {
+
+            }
+        };
+
+
+
         boolean isConnected = NetworkUtils.checkForNetworkStatus(this);
         if(isConnected) {
             getSupportLoaderManager().initLoader(MOVIE_TRAILERS_LOADER_ID, null, this);
+            getSupportLoaderManager().initLoader(MOVIE_REVIEWS_LOADER_ID, null, mReviewsLoaderListener);
         }
 
 
