@@ -1,17 +1,15 @@
 package com.brunogtavares.popmovies;
 
-import android.arch.lifecycle.LiveData;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.brunogtavares.popmovies.database.AppDatabase;
+import com.brunogtavares.popmovies.database.MovieDatabase;
 import com.brunogtavares.popmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -34,7 +32,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private Movie mMovieDb;
 
     // Database
-    private AppDatabase mDb;
+    private MovieDatabase mDb;
 
     private AppExecutors mTask;
 
@@ -45,7 +43,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         mTask = AppExecutors.getInstance();
-        mDb = AppDatabase.getsInstance(getApplicationContext());
+        mDb = MovieDatabase.getsInstance(getApplicationContext());
         mMovie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
         mTask.diskIO().execute(new Runnable() {
             @Override

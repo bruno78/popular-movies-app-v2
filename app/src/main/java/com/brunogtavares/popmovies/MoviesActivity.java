@@ -1,19 +1,12 @@
 package com.brunogtavares.popmovies;
 
 import android.app.LoaderManager;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -25,7 +18,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.brunogtavares.popmovies.database.AppDatabase;
+import com.brunogtavares.popmovies.database.MovieDatabase;
 import com.brunogtavares.popmovies.model.Movie;
 import com.brunogtavares.popmovies.utils.NetworkUtils;
 
@@ -36,7 +29,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.brunogtavares.popmovies.utils.NetworkUtils.checkForNetworkStatus;
-import static com.brunogtavares.popmovies.utils.NetworkUtils.createRequestUri;
 
 public class MoviesActivity extends AppCompatActivity
     implements MovieAdapter.MovieAdapterOnClickHandler,
@@ -46,6 +38,8 @@ public class MoviesActivity extends AppCompatActivity
     private static final String MOVIE_BUNDLE_KEY = "MOVIE_KEY";
     private static final String MOVIES_REQUEST_URL = "https://api.themoviedb.org/3/movie/";
     private static final int MOVIE_LOADER_ID = 1;
+    private static final String LIST_STATE_KEY = "state_key";
+    private static long mCurrentVisiblePosition = 0;
 
     private MovieAdapter mMovieAdapter;
 
@@ -53,12 +47,16 @@ public class MoviesActivity extends AppCompatActivity
     @BindView(R.id.tv_empty_view) TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
-    private AppDatabase mDb;
+    private MovieDatabase mDb;
 
     private MoviesViewModel mMoviesViewModel;
 
     private List<Movie> mMovieListApi;
     private List<Movie> mMovieListDb;
+
+    GridLayoutManager mGridLayoutManager;
+    Parcelable mListState;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +66,8 @@ public class MoviesActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         // Creating GridLayout to populate the movies as grid
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mGridLayoutManager = new GridLayoutManager(this, 2);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         // This will help to cache the viewHolders and improve scrolling performance
         mRecyclerView.setItemViewCacheSize(20);
@@ -90,7 +88,7 @@ public class MoviesActivity extends AppCompatActivity
 
         // mMoviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
 
-        mDb = AppDatabase.getsInstance(getApplicationContext());
+        mDb = MovieDatabase.getsInstance(getApplicationContext());
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -250,8 +248,35 @@ public class MoviesActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+//        ((GridLayoutManager) mRecyclerView.getLayoutManager())
+//                .scrollToPosition((int) mCurrentVisiblePosition);
+//        mCurrentVisiblePosition = 0;
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        resetAdapter();
+//        mCurrentVisiblePosition = ((GridLayoutManager) mRecyclerView.getLayoutManager())
+//                .findFirstVisibleItemPosition();
+        // resetAdapter();
     }
+
+//    @Override
+//    protected Parcelable onSaveInstanceState() {
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(LIST_STATE_KEY, mRecyclerView.getLayoutManager().onSaveInstanceState());
+//        return bundle;
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle state) {
+//        // Retrieve list state and list/item positions
+//        if(state instanceof Bundle) {
+//            mListState = ((Bundle) state).getParcelable(LIST_STATE_KEY);
+//        }
+//        super.onRestoreInstanceState(state);
+//    }
+
 }

@@ -18,7 +18,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                                     childColumns = "movieId",
                                     onDelete = CASCADE),
            indices = {@Index("movieId")})
-public class Review {
+public class MovieReview {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -26,7 +26,7 @@ public class Review {
     private String content;
     private int movieId;
 
-    public Review(int movieId, String author, String content) {
+    public MovieReview(int movieId, String author, String content) {
         this.movieId = movieId;
         this.author = author;
         this.content = content;

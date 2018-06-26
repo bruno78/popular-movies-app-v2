@@ -8,26 +8,26 @@ import android.util.Log;
 
 import com.brunogtavares.popmovies.model.Movie;
 import com.brunogtavares.popmovies.model.MovieTrailer;
-import com.brunogtavares.popmovies.model.Review;
+import com.brunogtavares.popmovies.model.MovieReview;
 
 /**
  * Created by brunogtavares on 6/22/18.
  */
-@Database(entities = {Movie.class, MovieTrailer.class, Review.class}, version = 1, exportSchema = false)
-public abstract class AppDatabase extends RoomDatabase {
+@Database(entities = {Movie.class, MovieTrailer.class, MovieReview.class}, version = 1, exportSchema = false)
+public abstract class MovieDatabase extends RoomDatabase {
 
-    private static final String TAG = AppDatabase.class.getSimpleName();
+    private static final String TAG = MovieDatabase.class.getSimpleName();
 
     private static final Object LOCK = new Object();
     private static final String DATABASE_NAME = "movie";
-    private static AppDatabase sInstance;
+    private static MovieDatabase sInstance;
 
-    public static AppDatabase getsInstance(Context context) {
+    public static MovieDatabase getsInstance(Context context) {
         if (sInstance == null) {
             synchronized (LOCK) {
                 Log.d(TAG, "Creating new database instance");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
-                        AppDatabase.class, AppDatabase.DATABASE_NAME).build();
+                        MovieDatabase.class, MovieDatabase.DATABASE_NAME).build();
             }
         }
         Log.d(TAG, "Getting the database instance");

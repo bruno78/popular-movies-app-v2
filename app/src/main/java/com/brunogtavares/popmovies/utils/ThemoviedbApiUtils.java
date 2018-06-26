@@ -4,19 +4,15 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.brunogtavares.popmovies.model.Movie;
+import com.brunogtavares.popmovies.model.MovieReview;
+import com.brunogtavares.popmovies.model.MovieTrailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,88 +35,25 @@ public class ThemoviedbApiUtils {
 
     public static List<Movie> extractMovies(String urlString) {
 
-        URL url = createUrl(urlString);
+        URL url = NetworkUtils.createUrl(urlString);
         String jsonResponse = null;
 
         try {
-            jsonResponse = makeHTTPRequest(url);
+            jsonResponse = NetworkUtils.makeHTTPRequest(url);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error making HTTP request", e);
         }
 
-        return extractFeatureFromJSON(jsonResponse);
+        return extractMovieFeatureFromJSON(jsonResponse);
     }
 
-    private static URL createUrl(String stringUrl) {
-        URL url = null;
-
-        try {
-            url = new URL(stringUrl);
-        } catch (MalformedURLException e) {
-            Log.e(LOG_TAG, "Unable to create URL", e);
-        }
-
-        return url;
-    }
-
-    private static String makeHTTPRequest(URL url) throws IOException {
-        String jsonResponse = "";
-
-        if(url == null) return jsonResponse;
-
-        HttpURLConnection urlConnection = null;
-        InputStream inputStream = null;
-
-        try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(10000);
-            urlConnection.setConnectTimeout(15000);
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            if(urlConnection.getResponseCode() == 200) {
-                inputStream = urlConnection.getInputStream();
-                jsonResponse = readFromInputStream(inputStream);
-
-            }
-            else {
-                Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
-            }
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem retrieving movies JSON results.", e);
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (inputStream != null) {
-                inputStream.close();
-            }
-        }
-        return jsonResponse;
-    }
-
-    private static String readFromInputStream(InputStream inputStream) throws IOException {
-
-        StringBuilder output = new StringBuilder();
-
-        if(inputStream != null) {
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
-            BufferedReader reader = new BufferedReader(inputStreamReader);
-            String line = reader.readLine();
-
-            while (line != null) {
-                output.append(line);
-                line = reader.readLine();
-            }
-        }
-        return output.toString();
-    }
-
-    private static List<Movie> extractFeatureFromJSON(String movieJSON) {
-
-        if(TextUtils.isEmpty(movieJSON)) return null;
+    private static List<Movie> extractMovieFeatureFromJSON(String movieJSON) {
 
         List<Movie> movies = new ArrayList<>();
+
+        if(TextUtils.isEmpty(movieJSON)) return movies;
+
+
         try {
             JSONObject response = new JSONObject(movieJSON);
             JSONArray results = response.getJSONArray("results");
@@ -152,6 +85,80 @@ public class ThemoviedbApiUtils {
         // w185 for small devices
         // w500 for tablet
         return "http://image.tmdb.org/t/p/" + "w500/" + moviePath;
+    }
+
+    public static List<MovieTrailer> extractMovieTrailerFeatureFromJSON(String movieTrailerJSON, int limit) {
+
+        List<MovieTrailer> movieTrailers = new ArrayList<>();
+
+        if(TextUtils.isEmpty(movieTrailerJSON)) {
+            return movieTrailers;
+        }
+
+        try {
+            JSONObject response = new JSONObject(movieTrailerJSON);
+            JSONArray results = response.getJSONArray("results");
+
+            // adjust the number of reviews
+            if(limit == 0 || limit > results.length()) limit = results.length();
+
+            for (int i = 0; i < limit; i++) {
+
+                // Get the movie Id;
+                int id = response.getInt("id");
+
+                JSONObject movieTrailerJson = results.getJSONObject(i);
+                String key = buildMovieTrailerPath(movieTrailerJson.getString("key"));
+
+                movieTrailers.add(new MovieTrailer(key, id));
+
+            }
+
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Unable to parse movieTrailer JSON response", e);
+        }
+
+        return movieTrailers;
+    }
+
+    private static String buildMovieTrailerPath(String movieTrailerPath) {
+        return "https://www.youtube.com/watch?v=" + movieTrailerPath;
+    }
+
+    public static List<MovieReview> extractMovieReviewFeatureFromJSON(String movieReviewJSON, int limit) {
+
+        List<MovieReview> movieReviews = new ArrayList<>();
+
+        if(TextUtils.isEmpty(movieReviewJSON)) {
+            return movieReviews;
+        }
+
+        try {
+            JSONObject response = new JSONObject(movieReviewJSON);
+            JSONArray results = response.getJSONArray("results");
+
+            // adjust the number of reviews
+            if(limit == 0 || limit > results.length()) limit = results.length();
+
+            for (int i = 0; i < limit; i++) {
+
+                // Get the movie Id;
+                int id = response.getInt("id");
+
+                JSONObject movieTrailerJson = results.getJSONObject(i);
+                String author = movieTrailerJson.getString("author");
+                String content = movieTrailerJson.getString("content");
+
+                movieReviews.add(new MovieReview(id, author, content));
+
+            }
+
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Unable to parse movieTrailer JSON response", e);
+        }
+
+        return movieReviews;
+
     }
 
 }

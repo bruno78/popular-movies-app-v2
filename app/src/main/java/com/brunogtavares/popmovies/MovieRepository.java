@@ -2,10 +2,9 @@ package com.brunogtavares.popmovies;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.brunogtavares.popmovies.database.AppDatabase;
+import com.brunogtavares.popmovies.database.MovieDatabase;
 import com.brunogtavares.popmovies.database.MovieDao;
 import com.brunogtavares.popmovies.model.Movie;
 import com.brunogtavares.popmovies.utils.NetworkUtils;
@@ -27,7 +26,7 @@ public class MovieRepository {
     private List<Movie> mAllMoviesApi;
 
     public MovieRepository(Application application) {
-        AppDatabase db = AppDatabase.getsInstance(application);
+        MovieDatabase db = MovieDatabase.getsInstance(application);
         mMovieDao = db.movieDao();
         mAllFavoriteMovies = mMovieDao.getAllMovies();
     }

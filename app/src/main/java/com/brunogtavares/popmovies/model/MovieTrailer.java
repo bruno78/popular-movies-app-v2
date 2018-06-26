@@ -25,9 +25,9 @@ public class MovieTrailer {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String key;
-    private String movieId;
+    private int movieId;
 
-    public MovieTrailer(String key, String movieId) {
+    public MovieTrailer(String key, int movieId) {
         this.key = key;
         this.movieId = movieId;
     }
@@ -48,11 +48,11 @@ public class MovieTrailer {
         this.key = key;
     }
 
-    public String getMovieId() {
+    public int getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(String movieId) {
+    public void setMovieId(int movieId) {
         this.movieId = movieId;
     }
 }

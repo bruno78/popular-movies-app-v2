@@ -5,7 +5,7 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
-import com.brunogtavares.popmovies.model.Review;
+import com.brunogtavares.popmovies.model.MovieReview;
 
 import java.util.List;
 
@@ -16,11 +16,11 @@ import java.util.List;
 @Dao
 public interface ReviewDao {
     @Insert
-    void insertReview(Review review);
+    void insertReview(MovieReview movieReview);
 
     @Delete
-    void deletRview(Review... reviews);
+    void deletRview(MovieReview... movieReviews);
 
-    @Query("SELECT * FROM review WHERE movieId = :movieId LIMIT :limit")
-    List<Review> loadAllReviewsForMovie(final int movieId, final int limit);
+    @Query("SELECT * FROM MovieReview WHERE movieId = :movieId LIMIT :limit")
+    List<MovieReview> loadAllReviewsForMovie(final int movieId, final int limit);
 }

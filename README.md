@@ -3,7 +3,7 @@
 
 <p align="center"><img src="https://cdn.rawgit.com/bruno78/popular-movies-app/5b33a0a7/screenshots/Screen%20Shot%202018-05-28%20at%2011.52.18%20AM.png" width="200" alt="movie list image"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app/5b33a0a7/screenshots/Screen%20Shot%202018-05-28%20at%2011.51.41%20AM.png" width="200" alt="Movie detail"></p>
 
-<p align="center"><img src="https://udacity-reviews-uploads.s3.us-west-2.amazonaws.com/_attachments/6093/1527535993/May-28-2018_14-29-44.gif" alt="gif of selecting different settings"></p>
+<p align="center"><img src="https://udacity-movieReviews-uploads.s3.us-west-2.amazonaws.com/_attachments/6093/1527535993/May-28-2018_14-29-44.gif" alt="gif of selecting different settings"></p>
 
 ## Project Summary
 
@@ -33,7 +33,7 @@ In this stage you’ll add additional functionality to the app you built in [Sta
 You’ll add more information to your movie details view:
 
 * You’ll allow users to view and play trailers ( either in the youtube app or a web browser).
-* You’ll allow users to read reviews of a selected movie.
+* You’ll allow users to read movieReviews of a selected movie.
 * You’ll also allow users to mark a movie as a favorite in the details view by tapping a button(star). This is for a local movies collection that you will maintain and does not require an API request*.
 * You’ll modify the existing sorting criteria for the main view to include an additional pivot to show their favorites collection.
 
@@ -52,7 +52,7 @@ You’ll add more information to your movie details view:
 - [x] Movies are displayed in the main layout via a grid of their corresponding movie poster thumbnails.
 - [x] UI contains a screen for displaying the details for a selected movie.
 - [x] Movie Details layout contains title, release date, movie poster, vote average, and plot synopsis.
-- [ ] Movie Details layout contains a section for displaying trailer videos and user reviews.
+- [ ] Movie Details layout contains a section for displaying trailer videos and user movieReviews.
 
 ### User Interface - Function
 
@@ -65,7 +65,7 @@ You’ll add more information to your movie details view:
 
 - [ ] In a background thread, app queries the /movie/popular or /movie/top_rated API for the sort criteria specified in the settings menu.
 - [ ] App requests for related videos for a selected movie via the /movie/{id}/videos endpoint in a background thread and displays those details when the user selects a movie.
-- [ ] App requests for user reviews for a selected movie via the /movie/{id}/reviews endpoint in a background thread and displays those details when the user selects a movie.
+- [ ] App requests for user movieReviews for a selected movie via the /movie/{id}/movieReviews endpoint in a background thread and displays those details when the user selects a movie.
 
 ### Data Persistence
 

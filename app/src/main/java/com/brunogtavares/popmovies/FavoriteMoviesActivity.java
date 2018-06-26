@@ -1,29 +1,19 @@
 package com.brunogtavares.popmovies;
 
-import android.app.LoaderManager;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.brunogtavares.popmovies.database.AppDatabase;
+import com.brunogtavares.popmovies.database.MovieDatabase;
 import com.brunogtavares.popmovies.model.Movie;
 
 import java.util.ArrayList;
@@ -53,7 +43,7 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements MovieAd
     @BindView(R.id.pb_loading_indicator)
     ProgressBar mLoadingIndicator;
 
-    private AppDatabase mDb;
+    private MovieDatabase mDb;
 
 
     @Override
@@ -86,7 +76,7 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements MovieAd
 
         // populateMovieList();
 
-        mDb = AppDatabase.getsInstance(getApplicationContext());
+        mDb = MovieDatabase.getsInstance(getApplicationContext());
         retrieveMovies();
 
     }

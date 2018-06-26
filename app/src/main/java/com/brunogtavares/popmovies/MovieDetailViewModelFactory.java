@@ -3,14 +3,14 @@ package com.brunogtavares.popmovies;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
-import com.brunogtavares.popmovies.database.AppDatabase;
+import com.brunogtavares.popmovies.database.MovieDatabase;
 
 public class MovieDetailViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
-    private final AppDatabase mDb;
+    private final MovieDatabase mDb;
     private final int mMovieId;
 
-    public MovieDetailViewModelFactory(AppDatabase database, int movieId) {
+    public MovieDetailViewModelFactory(MovieDatabase database, int movieId) {
         mDb = database;
         mMovieId = movieId;
     }
