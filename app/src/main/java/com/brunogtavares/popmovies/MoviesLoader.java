@@ -33,7 +33,6 @@ public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
     @Override
     public List<Movie> loadInBackground() {
         if (mUrl == null) return null;
-        // return ThemoviedbApiUtils.extractMovies(mUrl);
         return ThemoviedbApiClient.getAllMovies(mUrl);
     }
 }

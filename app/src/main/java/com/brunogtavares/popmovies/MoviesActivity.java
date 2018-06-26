@@ -29,31 +29,23 @@ import butterknife.ButterKnife;
 import static com.brunogtavares.popmovies.utils.NetworkUtils.checkForNetworkStatus;
 
 public class MoviesActivity extends AppCompatActivity
-    implements MovieAdapter.MovieAdapterOnClickHandler,
-    LoaderManager.LoaderCallbacks<List<Movie>> {
+        implements LoaderManager.LoaderCallbacks<List<Movie>>, MovieAdapter.MovieAdapterOnClickHandler {
 
     private static final String LOG_TAG = MoviesActivity.class.getName();
+
     private static final String MOVIE_BUNDLE_KEY = "MOVIE_KEY";
-    private static final String MOVIES_REQUEST_URL = "https://api.themoviedb.org/3/movie/";
+
     private static final int MOVIE_LOADER_ID = 1;
     private static final String LIST_STATE_KEY = "state_key";
-    private static long mCurrentVisiblePosition = 0;
+    private static Parcelable mListState;
 
+    private GridLayoutManager mGridLayoutManager;
     private MovieAdapter mMovieAdapter;
 
     @BindView(R.id.rv_movie_list) RecyclerView mRecyclerView;
     @BindView(R.id.tv_empty_view) TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
-    private MovieDatabase mDb;
-
-    private MoviesViewModel mMoviesViewModel;
-
-    private List<Movie> mMovieListApi;
-    private List<Movie> mMovieListDb;
-
-    GridLayoutManager mGridLayoutManager;
-    Parcelable mListState;
 
 
     @Override
@@ -83,17 +75,6 @@ public class MoviesActivity extends AppCompatActivity
         // Set the adapter on the RecyclerView
         // so the list can be populated in the user interface
         mRecyclerView.setAdapter(mMovieAdapter);
-
-        // mMoviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
-
-        mDb = MovieDatabase.getInstance(getApplicationContext());
-
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mMovieListDb = mDb.movieDao().getAllMovies().getValue();
-            }
-        });
 
 
         populateMovieList();
@@ -127,62 +108,11 @@ public class MoviesActivity extends AppCompatActivity
     // Handles when user click on menu poster
     @Override
     public void onClick(Movie movie) {
-//        if(mMovieListDb.contains(movie)) {
-//            int position = mMovieListDb.indexOf(movie);
-//            setMovieToIntent(mMovieListDb.get(position));
-//        }
-//        else {
-//            setMovieToIntent(movie);
-//        }
-        setMovieToIntent(movie);
-
-    }
-
-    private void setMovieToIntent(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(MOVIE_BUNDLE_KEY, movie);
         startActivity(intent);
+
     }
-
-
-   // private void populateMovieList() {
-
-        // Before populating the list, check for the network status
-//        boolean isConnected = NetworkUtils.checkForNetworkStatus(this);
-//        // If it's connected it will call the load manager otherwise will display no connection message
-//        if (isConnected) {
-//            // Start Loader Manager
-            // getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
-//
-//            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//            String orderBy = sharedPrefs.getString(
-//                getString(R.string.settings_order_by_key),
-//                getString(R.string.settings_order_by_default));
-//
-//
-//            mMovieListApi = mMoviesViewModel.getAllMoviesSortedBy(orderBy);
-//            // If movies is not empty or null populate the adapter
-//            if(mMovieListApi != null || !mMovieListApi.isEmpty()) {
-//                mMovieAdapter.setMovieList(mMovieListApi);
-//                mRecyclerView.setAdapter(mMovieAdapter);
-//            }
-//            else {
-//                // Set empty state text to display "No movies found."
-//                mErrorMessageDisplay.setText(R.string.no_movies);
-//            }
-//
-//
-//
-//        }
-//        else {
-//            mLoadingIndicator.setVisibility(View.GONE);
-//            // Update empty state with no connection error message
-//            mErrorMessageDisplay.setText(R.string.no_connection);
-//        }
-
-
-        // Before populating the list, check for the network status
-        // boolean isConnected = NetworkUtils.checkForNetworkStatus(this);
 
     private void populateMovieList() {
 
@@ -215,10 +145,7 @@ public class MoviesActivity extends AppCompatActivity
                 getString(R.string.settings_order_by_key),
                 getString(R.string.settings_order_by_default));
 
-        // Uri.Builder uri = NetworkUtils.createRequestUri(orderBy);
-
-        // return new MoviesLoader(this, uri.toString());
-        return null;
+        return new MoviesLoader(this, orderBy);
     }
 
     @Override
@@ -231,7 +158,7 @@ public class MoviesActivity extends AppCompatActivity
         resetAdapter();
 
         // If movies is not empty or null populate the adapter
-        if(!movies.isEmpty()) {
+        if(movies != null && movies.size() > 0) {
             mMovieAdapter.setMovieList(movies);
             mRecyclerView.setAdapter(mMovieAdapter);
         }
@@ -249,33 +176,8 @@ public class MoviesActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-//        ((GridLayoutManager) mRecyclerView.getLayoutManager())
-//                .scrollToPosition((int) mCurrentVisiblePosition);
-//        mCurrentVisiblePosition = 0;
+        resetAdapter();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        mCurrentVisiblePosition = ((GridLayoutManager) mRecyclerView.getLayoutManager())
-//                .findFirstVisibleItemPosition();
-        // resetAdapter();
-    }
-
-//    @Override
-//    protected Parcelable onSaveInstanceState() {
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable(LIST_STATE_KEY, mRecyclerView.getLayoutManager().onSaveInstanceState());
-//        return bundle;
-//    }
-//
-//    @Override
-//    protected void onRestoreInstanceState(Bundle state) {
-//        // Retrieve list state and list/item positions
-//        if(state instanceof Bundle) {
-//            mListState = ((Bundle) state).getParcelable(LIST_STATE_KEY);
-//        }
-//        super.onRestoreInstanceState(state);
-//    }
 
 }
