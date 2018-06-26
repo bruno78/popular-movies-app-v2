@@ -20,7 +20,9 @@ import java.nio.charset.Charset;
 /**
  * Created by brunogtavares on 6/25/18.
  * Network Utils contains methods that takes care of most tasks
- * related to communications to the network
+ * related to communications to Network
+ * 1. checkForNetworkStatus check for network status returning a boolean
+ * 2. createRequestUri creates Requests
  */
 
 public class NetworkUtils {
@@ -38,18 +40,20 @@ public class NetworkUtils {
         return activeNetwork != null && activeNetwork.isConnected();
     }
 
-    public static Uri.Builder createRequestUri(String sortBy) {
+    public static String getJsonResponse(Uri.Builder uri) {
+        URL url = NetworkUtils.creatUrl(uri.toString());
 
-        Uri baseUri = Uri.parse(mRequestUrl);
-        Uri.Builder uriBuilder = baseUri.buildUpon();
+        String jsonResponse = null;
 
-        uriBuilder.appendPath(sortBy);
-        uriBuilder.appendQueryParameter("api_key", mApiKey);
-
-        return uriBuilder;
+        try {
+            jsonResponse = NetworkUtils.makeHTTPRequest(url);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error making HTTP request", e);
+        }
+        return jsonResponse;
     }
 
-    public static URL createUrl(String stringUrl) {
+    public static URL creatUrl(String stringUrl) {
         URL url = null;
 
         try {

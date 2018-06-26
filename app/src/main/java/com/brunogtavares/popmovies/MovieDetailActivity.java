@@ -43,7 +43,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         mTask = AppExecutors.getInstance();
-        mDb = MovieDatabase.getsInstance(getApplicationContext());
+        mDb = MovieDatabase.getInstance(getApplicationContext());
         mMovie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
         mTask.diskIO().execute(new Runnable() {
             @Override

@@ -22,7 +22,7 @@ public abstract class MovieDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "movie";
     private static MovieDatabase sInstance;
 
-    public static MovieDatabase getsInstance(Context context) {
+    public static MovieDatabase getInstance(Context context) {
         if (sInstance == null) {
             synchronized (LOCK) {
                 Log.d(TAG, "Creating new database instance");

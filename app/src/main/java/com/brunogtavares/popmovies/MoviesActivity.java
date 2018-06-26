@@ -4,7 +4,6 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 
 import com.brunogtavares.popmovies.database.MovieDatabase;
 import com.brunogtavares.popmovies.model.Movie;
-import com.brunogtavares.popmovies.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +86,7 @@ public class MoviesActivity extends AppCompatActivity
 
         // mMoviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
 
-        mDb = MovieDatabase.getsInstance(getApplicationContext());
+        mDb = MovieDatabase.getInstance(getApplicationContext());
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -217,9 +215,10 @@ public class MoviesActivity extends AppCompatActivity
                 getString(R.string.settings_order_by_key),
                 getString(R.string.settings_order_by_default));
 
-        Uri.Builder uri = NetworkUtils.createRequestUri(orderBy);
+        // Uri.Builder uri = NetworkUtils.createRequestUri(orderBy);
 
-        return new MoviesLoader(this, uri.toString());
+        // return new MoviesLoader(this, uri.toString());
+        return null;
     }
 
     @Override

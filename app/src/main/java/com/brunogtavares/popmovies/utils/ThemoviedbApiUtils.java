@@ -33,21 +33,7 @@ public class ThemoviedbApiUtils {
     private ThemoviedbApiUtils() {
     }
 
-    public static List<Movie> extractMovies(String urlString) {
-
-        URL url = NetworkUtils.createUrl(urlString);
-        String jsonResponse = null;
-
-        try {
-            jsonResponse = NetworkUtils.makeHTTPRequest(url);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error making HTTP request", e);
-        }
-
-        return extractMovieFeatureFromJSON(jsonResponse);
-    }
-
-    private static List<Movie> extractMovieFeatureFromJSON(String movieJSON) {
+    public static List<Movie> extractMovieFeatureFromJSON(String movieJSON) {
 
         List<Movie> movies = new ArrayList<>();
 

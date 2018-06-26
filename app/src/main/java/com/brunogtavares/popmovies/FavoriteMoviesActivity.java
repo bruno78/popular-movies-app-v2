@@ -76,7 +76,7 @@ public class FavoriteMoviesActivity extends AppCompatActivity implements MovieAd
 
         // populateMovieList();
 
-        mDb = MovieDatabase.getsInstance(getApplicationContext());
+        mDb = MovieDatabase.getInstance(getApplicationContext());
         retrieveMovies();
 
     }

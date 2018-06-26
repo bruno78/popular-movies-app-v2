@@ -3,6 +3,7 @@ package com.brunogtavares.popmovies;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
+import com.brunogtavares.popmovies.WebService.ThemoviedbApiClient;
 import com.brunogtavares.popmovies.model.Movie;
 import com.brunogtavares.popmovies.utils.ThemoviedbApiUtils;
 
@@ -32,6 +33,7 @@ public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
     @Override
     public List<Movie> loadInBackground() {
         if (mUrl == null) return null;
-        return ThemoviedbApiUtils.extractMovies(mUrl);
+        // return ThemoviedbApiUtils.extractMovies(mUrl);
+        return ThemoviedbApiClient.getAllMovies(mUrl);
     }
 }
