@@ -7,16 +7,19 @@
     android:layout_height="wrap_content"
     android:padding="8dp"
     android:orientation="vertical">
+
     <RelativeLayout
+        android:id="@+id/rl_trailer_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <ImageView
             android:layout_width="70dp"
             android:layout_height="50dp"
             android:background="#D3D3D3"
             android:padding="1dp"/>
+
         <ImageView
-            android:id="@+id/iv_trailer_thumbnail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -30,6 +33,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        tools:text="Trailer 1"
-         />
+        tools:text="Trailer 1" />
+
 </LinearLayout>
