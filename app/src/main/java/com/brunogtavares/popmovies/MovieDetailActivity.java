@@ -203,16 +203,9 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
     @Override
     public void onLoadFinished(Loader<List<MovieTrailer>> loader, List<MovieTrailer> data) {
+
         mMovieTrailerAdapter.setMovieTrailers(data);
 
-        if(mTrailerRvState != null) {
-            mMovieTrailerRVLayoutManager.onRestoreInstanceState(mTrailerRvState);
-            mTrailerRvState = null;
-        }
-        if(scrollPositions != null) {
-            mScrollView.scrollTo(scrollPositions[0], scrollPositions[1]);
-            scrollPositions = null;
-        }
     }
 
     @Override
