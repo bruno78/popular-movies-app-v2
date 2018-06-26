@@ -36,7 +36,7 @@ public class ThemoviedbApiClient {
     }
 
     public static List<MovieTrailer> getMovietrailers(int movieId, int limit) {
-        Uri baseUri = Uri.parse(REQUEST_URL + movieId + "/reviews");
+        Uri baseUri = Uri.parse(REQUEST_URL + movieId + "/videos");
         Uri.Builder uriBuilder = baseUri.buildUpon();
         uriBuilder.appendQueryParameter("api_key", MOVIE_API_KEY);
 

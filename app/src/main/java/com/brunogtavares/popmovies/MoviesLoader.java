@@ -17,11 +17,11 @@ import java.util.List;
 
 public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
 
-    private String mUrl;
+    private String mSortByParam;
 
-    public MoviesLoader(Context context, String url) {
+    public MoviesLoader(Context context, String sortByParam) {
         super(context);
-        mUrl = url;
+        mSortByParam = sortByParam;
     }
 
     @Override
@@ -31,7 +31,6 @@ public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
 
     @Override
     public List<Movie> loadInBackground() {
-        if (mUrl == null) return null;
-        return ThemoviedbApiClient.getAllMovies(mUrl);
+        return ThemoviedbApiClient.getAllMovies(mSortByParam);
     }
 }

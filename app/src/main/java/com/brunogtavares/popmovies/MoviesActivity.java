@@ -39,7 +39,7 @@ public class MoviesActivity extends AppCompatActivity
 
     private static final String MOVIE_BUNDLE_KEY = "MOVIE_KEY";
 
-    private static final int MOVIE_LOADER_ID = 1;
+    private static final int MOVIE_LOADER_ID = 100;
     private static final String LIST_STATE_KEY = "state_key";
     private static Parcelable mListState;
 
