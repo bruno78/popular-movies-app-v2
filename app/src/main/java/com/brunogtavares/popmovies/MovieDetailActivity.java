@@ -53,6 +53,10 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     private static final int MOVIE_TRAILERS_LOADER_ID = 101;
     private static final int MOVIE_REVIEWS_LOADER_ID = 102;
 
+    private static final String TRAILER_RV_STATE_KEY = "TRAILER_RV_STATE";
+    private static final String REVIEW_RV_STATE_KEY = "REVIEW_RV_STATE";
+    private static final String SCROLL_POSITION_KEY = "SCROLL_POSITION_KEY";
+
     // This number will be adjustable for shared preferences later
     private static final int MOVIE_TRAILER_LIMIT = 3;
     private static final int MOVIE_REVIEW_LIMIT = 3;
@@ -63,7 +67,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
     private static LoaderManager.LoaderCallbacks<List<MovieReview>> mReviewsLoaderListener;
 
-    private static Parcelable mTrailerRvState;
+    private static Parcelable mTrailerRvState, mReviewRVState;
     private static int[] scrollPositions;
 
     @BindView(R.id.iv_movie_backdrop) ImageView mBackdrop;
@@ -128,8 +132,19 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
             @Override
             public void onLoadFinished(Loader<List<MovieReview>> loader, List<MovieReview> movieReviews) {
+
                 Log.d(LOG_TAG, "" + movieReviews.size());
+
                 mMovieReviewAdapter.setMovieReviews(movieReviews);
+
+                if(mReviewRVState != null) {
+                    mMovieReviewRVLayoutManager.onRestoreInstanceState(mReviewRVState);
+                    mReviewRVState = null;
+                }
+                if(scrollPositions != null) {
+                    mScrollView.scrollTo(scrollPositions[0], scrollPositions[1]);
+                    scrollPositions = null;
+                }
 
             }
 
@@ -139,21 +154,53 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
             }
         };
 
-
-
         boolean isConnected = NetworkUtils.checkForNetworkStatus(this);
         if(isConnected) {
             getSupportLoaderManager().initLoader(MOVIE_TRAILERS_LOADER_ID, null, this);
             getSupportLoaderManager().initLoader(MOVIE_REVIEWS_LOADER_ID, null, mReviewsLoaderListener);
         }
 
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(MOVIE_BUNDLE_KEY, mMovie);
+
+        mTrailerRvState = mMovieTrailerRVLayoutManager.onSaveInstanceState();
+        outState.putParcelable(TRAILER_RV_STATE_KEY, mTrailerRvState);
+
+        mReviewRVState = mMovieTrailerRVLayoutManager.onSaveInstanceState();
+        outState.putParcelable(REVIEW_RV_STATE_KEY, mReviewRVState);
+
+        scrollPositions = new int[] {mScrollView.getScrollX(), mScrollView.getScrollX()};
+        outState.putIntArray(SCROLL_POSITION_KEY, scrollPositions);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mMovie = savedInstanceState.getParcelable(MOVIE_BUNDLE_KEY);
+        mTrailerRvState = savedInstanceState.getParcelable(TRAILER_RV_STATE_KEY);
+        mReviewRVState = savedInstanceState.getParcelable(REVIEW_RV_STATE_KEY);
+        scrollPositions = savedInstanceState.getIntArray(SCROLL_POSITION_KEY);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(mReviewRVState != null) {
+            mMovieTrailerRVLayoutManager.onRestoreInstanceState(mTrailerRvState);
+        }
+        if(mReviewRVState != null) {
+            mMovieReviewRVLayoutManager.onRestoreInstanceState(mReviewRVState);
+        }
     }
 
     private void populateUI(){
         mMovie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
-        // Needs to get movie id and pass as parameter to get the review
-        // and trailers
 
         setTitle(mMovie.getTitle());
         Picasso.with(this).load(mMovie.getBackDropPath()).into(mBackdrop);
@@ -265,8 +312,16 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     @Override
     public void onLoadFinished(Loader<List<MovieTrailer>> loader, List<MovieTrailer> data) {
 
-        Log.d(LOG_TAG, "MOVIE SIZE: " + data.size());
         mMovieTrailerAdapter.setMovieTrailers(data);
+
+        if(mTrailerRvState != null) {
+            mMovieTrailerRVLayoutManager.onRestoreInstanceState(mTrailerRvState);
+            mTrailerRvState = null;
+        }
+        if(scrollPositions != null) {
+            mScrollView.scrollTo(scrollPositions[0], scrollPositions[1]);
+            scrollPositions = null;
+        }
 
     }
 
