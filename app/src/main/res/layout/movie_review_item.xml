@@ -15,7 +15,7 @@
         tools:text="@string/large_text"/>
 
     <TextView
-        android:id="@+id/tv_reviewed_by"
+        android:id="@+id/tv_movie_review_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="8dp"
