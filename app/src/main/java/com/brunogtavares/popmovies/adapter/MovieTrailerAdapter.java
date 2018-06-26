@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -57,10 +58,10 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.rl_trailer_button)
-        RelativeLayout movieTrailerButton;
-        @BindView(R.id.tv_movie_trailer_label)
-        TextView mMovieTrailerLabel;
+        @BindView(R.id.rl_trailer_button) RelativeLayout movieTrailerButton;
+        @BindView(R.id.iv_movie_frame) ImageView mMovieFrame;
+        @BindView(R.id.iv_movie_play) ImageView mMoviePlay;
+        @BindView(R.id.tv_movie_trailer_label) TextView mMovieTrailerLabel;
 
         public ViewHolder(View itemView) {
             super(itemView);

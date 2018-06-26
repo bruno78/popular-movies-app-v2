@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ import butterknife.OnClick;
 
 public class MovieDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<MovieTrailer>>, MovieTrailerAdapter.MovieTrailerOnClickHandler {
 
+    private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
     private static final String MOVIE_BUNDLE_KEY = "MOVIE_KEY";
     private static final int MOVIE_TRAILERS_LOADER_ID = 101;
 
@@ -80,6 +82,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         mMovieTrailerRecyclerView.setLayoutManager(mMovieTrailerRVLayoutManager);
         mMovieTrailerRecyclerView.setHasFixedSize(true);
         mMovieTrailerAdapter = new MovieTrailerAdapter(this);
+        mMovieTrailerRecyclerView.setAdapter(mMovieTrailerAdapter);
 
         boolean isConnected = NetworkUtils.checkForNetworkStatus(this);
         if(isConnected) {
@@ -204,6 +207,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     @Override
     public void onLoadFinished(Loader<List<MovieTrailer>> loader, List<MovieTrailer> data) {
 
+        Log.d(LOG_TAG, "MOVIE SIZE: " + data.size());
         mMovieTrailerAdapter.setMovieTrailers(data);
 
     }
