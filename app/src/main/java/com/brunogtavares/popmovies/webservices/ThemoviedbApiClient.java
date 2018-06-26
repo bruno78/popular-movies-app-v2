@@ -1,4 +1,4 @@
-package com.brunogtavares.popmovies.WebService;
+package com.brunogtavares.popmovies.webservices;
 
 import android.net.Uri;
 
@@ -6,8 +6,6 @@ import com.brunogtavares.popmovies.BuildConfig;
 import com.brunogtavares.popmovies.model.Movie;
 import com.brunogtavares.popmovies.model.MovieReview;
 import com.brunogtavares.popmovies.model.MovieTrailer;
-import com.brunogtavares.popmovies.utils.NetworkUtils;
-import com.brunogtavares.popmovies.utils.ThemoviedbApiUtils;
 
 import java.util.List;
 

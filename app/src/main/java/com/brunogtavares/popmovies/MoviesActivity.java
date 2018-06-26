@@ -1,11 +1,14 @@
 package com.brunogtavares.popmovies;
 
 import android.app.LoaderManager;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,7 +20,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.brunogtavares.popmovies.database.MovieDatabase;
 import com.brunogtavares.popmovies.model.Movie;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.brunogtavares.popmovies.utils.NetworkUtils.checkForNetworkStatus;
+import static com.brunogtavares.popmovies.webservices.NetworkUtils.checkForNetworkStatus;
 
 public class MoviesActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<List<Movie>>, MovieAdapter.MovieAdapterOnClickHandler {
@@ -45,6 +47,8 @@ public class MoviesActivity extends AppCompatActivity
     @BindView(R.id.rv_movie_list) RecyclerView mRecyclerView;
     @BindView(R.id.tv_empty_view) TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
+
+    private MoviesViewModel mMovieViewModel;
 
 
 
@@ -76,8 +80,16 @@ public class MoviesActivity extends AppCompatActivity
         // so the list can be populated in the user interface
         mRecyclerView.setAdapter(mMovieAdapter);
 
-
         populateMovieList();
+
+        mMovieViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
+        mMovieViewModel.getAllFavoriteMovies().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                mMovieAdapter.setMovieList(movies);
+            }
+        });
+
 
     }
 
@@ -124,12 +136,11 @@ public class MoviesActivity extends AppCompatActivity
             getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
         }
         else {
-            mLoadingIndicator.setVisibility(View.GONE);
-            // Update empty state with no connection error message
-            mErrorMessageDisplay.setText(R.string.no_connection);
+            showErrorMessage();
         }
 
     }
+
 
     private void resetAdapter() {
         // Create a new adapter with an empty movie list
@@ -151,21 +162,33 @@ public class MoviesActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
 
-        // set the invisibility of the Progress bar to invisible
-        mLoadingIndicator.setVisibility(View.GONE);
-
         // Clear the adapter from previous data
         resetAdapter();
 
         // If movies is not empty or null populate the adapter
-        if(movies != null && movies.size() > 0) {
+        if(movies == null) {
+            showErrorMessage();
+        }
+        else if (movies.size() == 0) {
+            showEmptyState();
+        }
+        else {
+            mLoadingIndicator.setVisibility(View.GONE);
             mMovieAdapter.setMovieList(movies);
             mRecyclerView.setAdapter(mMovieAdapter);
         }
-        else {
-            // Set empty state text to display "No movies found."
-            mErrorMessageDisplay.setText(R.string.no_movies);
-        }
+    }
+
+    private void showEmptyState() {
+        mLoadingIndicator.setVisibility(View.GONE);
+        // Set empty state text to display "No movies found."
+        mErrorMessageDisplay.setText(R.string.no_movies);
+    }
+
+    private void showErrorMessage() {
+        mLoadingIndicator.setVisibility(View.GONE);
+        // Update empty state with no connection error message
+        mErrorMessageDisplay.setText(R.string.no_connection);
     }
 
     @Override

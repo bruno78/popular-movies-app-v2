@@ -1,4 +1,4 @@
-package com.brunogtavares.popmovies.utils;
+package com.brunogtavares.popmovies.webservices;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
