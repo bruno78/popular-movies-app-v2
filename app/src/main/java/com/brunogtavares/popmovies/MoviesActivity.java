@@ -20,7 +20,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.brunogtavares.popmovies.adapter.MovieAdapter;
 import com.brunogtavares.popmovies.model.Movie;
+import com.brunogtavares.popmovies.viewmodel.MoviesViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.brunogtavares.popmovies.webservices.NetworkUtils.checkForNetworkStatus;
+import static com.brunogtavares.popmovies.webservice.NetworkUtils.checkForNetworkStatus;
 
 public class MoviesActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<List<Movie>>, MovieAdapter.MovieAdapterOnClickHandler {

@@ -1,4 +1,4 @@
-package com.brunogtavares.popmovies.webservices;
+package com.brunogtavares.popmovies.webservice;
 
 import android.net.Uri;
 

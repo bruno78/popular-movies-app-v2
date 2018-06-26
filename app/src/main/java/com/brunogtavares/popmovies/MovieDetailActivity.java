@@ -28,6 +28,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.tv_synopsis) TextView mSinopsys;
     @BindView(R.id.fab_save_favorites) FloatingActionButton mAddFavoritesButton;
 
+
     private Movie mMovie;
     private Movie mMovieDb;
 

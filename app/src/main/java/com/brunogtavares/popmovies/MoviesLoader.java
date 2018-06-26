@@ -3,7 +3,7 @@ package com.brunogtavares.popmovies;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-import com.brunogtavares.popmovies.webservices.ThemoviedbApiClient;
+import com.brunogtavares.popmovies.webservice.ThemoviedbApiClient;
 import com.brunogtavares.popmovies.model.Movie;
 
 import java.util.List;
