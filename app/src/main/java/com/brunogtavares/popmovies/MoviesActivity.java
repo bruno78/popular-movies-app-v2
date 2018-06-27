@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,9 +40,14 @@ public class MoviesActivity extends AppCompatActivity
 
     private static final String MOVIE_BUNDLE_KEY = "MOVIE_KEY";
 
+    private int sortBy;
+    private static final String MOVIE_LIST_STATE_KEY = "MOVIE_LIST_STATE";
+    private static final String SORT_BY_KEY = "SORT_BY";
+    private static Parcelable mMovieListState;
+
     private static final int MOVIE_LOADER_ID = 100;
-    private static final String LIST_STATE_KEY = "state_key";
-    private static Parcelable mListState;
+    private static final String POPULAR = "popular";
+    private static final String TOP_RATED = "top_rated";
 
     private GridLayoutManager mGridLayoutManager;
     private MovieAdapter mMovieAdapter;
@@ -75,24 +81,65 @@ public class MoviesActivity extends AppCompatActivity
         // Create a new adapter that takes an empty list of movies as input
         mMovieAdapter = new MovieAdapter( this);
         mMovieAdapter.setContext(getApplicationContext());
-        mMovieAdapter.setMovieList(new ArrayList<Movie>());
+        // mMovieAdapter.setMovieList(new ArrayList<Movie>());
 
 
         // Set the adapter on the RecyclerView
         // so the list can be populated in the user interface
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        populateMovieList();
-
         mMovieViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
-        mMovieViewModel.getAllFavoriteMovies().observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                mMovieAdapter.setMovieList(movies);
-            }
-        });
 
+        if (savedInstanceState != null) {
+            sortBy = savedInstanceState.getInt(SORT_BY_KEY);
+        }
+        else {
+            sortBy = R.id.action_sort_by_popular_movies;
+        }
 
+        if(sortBy == R.id.action_favorites) {
+            initViewModel();
+        }
+        else {
+            populateMovieList();
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SORT_BY_KEY, sortBy);
+
+        mMovieListState = mGridLayoutManager.onSaveInstanceState();
+        outState.putParcelable(MOVIE_LIST_STATE_KEY, mMovieListState);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        sortBy = savedInstanceState.getInt(SORT_BY_KEY);
+        mMovieListState = savedInstanceState.getParcelable(MOVIE_LIST_STATE_KEY);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (sortBy == R.id.action_favorites) {
+            initViewModel();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.v("main page state", "onResume");
+
+        if (mMovieListState != null) {
+            mGridLayoutManager.onRestoreInstanceState(mMovieListState);
+        }
     }
 
     // Creates the menu
@@ -105,17 +152,23 @@ public class MoviesActivity extends AppCompatActivity
     // Handles the options selected in the menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            Intent settingsIntent = new Intent(this, SettingsActivity.class);
-            startActivity(settingsIntent);
-            return true;
+        sortBy = item.getItemId();
+        switch (sortBy) {
+            case R.id.action_sort_by_popular_movies:
+                break;
+            case R.id.action_sort_by_top_rated:
+                break;
+            case R.id.action_favorites:
+                break;
         }
-        if( id == R.id.action_favorites) {
-            Intent favoritesIntent = new Intent(this, FavoriteMoviesActivity.class);
-            startActivity(favoritesIntent);
-            return true;
+
+        resetAdapter();
+        if (sortBy == R.id.action_favorites) {
+            initViewModel();
+        } else {
+            getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -126,6 +179,21 @@ public class MoviesActivity extends AppCompatActivity
         intent.putExtra(MOVIE_BUNDLE_KEY, movie);
         startActivity(intent);
 
+    }
+
+    private void initViewModel() {
+        mMovieViewModel.getAllFavoriteMovies().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                mMovieAdapter.setMovieList(movies);
+                if (movies == null) {
+                    showErrorMessage();
+                }
+                else if (movies.size() == 0) {
+                    showEmptyState();
+                }
+            }
+        });
     }
 
     private void populateMovieList() {
@@ -153,19 +221,25 @@ public class MoviesActivity extends AppCompatActivity
     @Override
     public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String orderBy = sharedPrefs.getString(
-                getString(R.string.settings_order_by_key),
-                getString(R.string.settings_order_by_default));
+        String sort = "";
 
-        return new MoviesLoader(this, orderBy);
+        if(sortBy == R.id.action_sort_by_popular_movies) {
+            sort = POPULAR;
+        }
+        else if (sortBy == R.id.action_sort_by_top_rated) {
+            sort = TOP_RATED;
+        }
+
+        return new MoviesLoader(this, sort);
+
     }
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
 
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
         // Clear the adapter from previous data
-        resetAdapter();
+        // resetAdapter();
 
         // If movies is not empty or null populate the adapter
         if(movies == null) {
@@ -183,12 +257,14 @@ public class MoviesActivity extends AppCompatActivity
 
     private void showEmptyState() {
         mLoadingIndicator.setVisibility(View.GONE);
+        mErrorMessageDisplay.setVisibility(View.VISIBLE);
         // Set empty state text to display "No movies found."
         mErrorMessageDisplay.setText(R.string.no_movies);
     }
 
     private void showErrorMessage() {
         mLoadingIndicator.setVisibility(View.GONE);
+        mErrorMessageDisplay.setVisibility(View.VISIBLE);
         // Update empty state with no connection error message
         mErrorMessageDisplay.setText(R.string.no_connection);
     }
@@ -197,12 +273,5 @@ public class MoviesActivity extends AppCompatActivity
     public void onLoaderReset(Loader<List<Movie>> loader) {
         resetAdapter();
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        resetAdapter();
-    }
-
 
 }

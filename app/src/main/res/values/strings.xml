@@ -18,6 +18,10 @@
     <string name="settings_order_by_most_popular_label">Popular</string>
     <string name="settings_order_by_most_popular_value" translatable="false">popular</string>
 
+    <!-- Label for order-by most popular option [CHAR LIMIT=20] -->
+    <string name="settings_order_by_favorites_label">Favorites</string>
+    <string name="settings_order_by_most_favorites_value" translatable="false">favorites</string>
+
     <!-- Label for order-by most top rated option [CHAR LIMIT=20] -->
     <string name="settings_order_by_top_rated_label">Top Rated</string>
     <string name="settings_order_by_top_rated_value" translatable="false">top_rated</string>

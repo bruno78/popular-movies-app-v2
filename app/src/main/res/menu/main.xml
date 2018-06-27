@@ -3,16 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.brunogtavares.popmovies.MovieDetailActivity">
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/settings_menu_item"
-        android:icon="@drawable/ic_filter"
+        android:id="@+id/action_sort_by_popular_movies"
         android:orderInCategory="1"
-        app:showAsAction="ifRoom" />
+        android:title="@string/settings_order_by_most_popular_label"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_sort_by_top_rated"
+        android:orderInCategory="2"
+        android:title="@string/settings_order_by_top_rated_label"
+        app:showAsAction="never"/>
+
     <item
         android:id="@+id/action_favorites"
-        android:title="favorites"
-        android:icon="@drawable/ic_favorite_black_24dp"
-        android:iconTint="@android:color/white"
-        android:orderInCategory="1"
-        app:showAsAction="ifRoom" />
+        android:orderInCategory="3"
+        android:title="@string/settings_order_by_favorites_label"
+        app:showAsAction="never"/>
 </menu>

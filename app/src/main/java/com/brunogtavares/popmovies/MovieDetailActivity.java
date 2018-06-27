@@ -1,5 +1,7 @@
 package com.brunogtavares.popmovies;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -28,6 +30,8 @@ import com.brunogtavares.popmovies.database.MovieDatabase;
 import com.brunogtavares.popmovies.model.Movie;
 import com.brunogtavares.popmovies.model.MovieReview;
 import com.brunogtavares.popmovies.model.MovieTrailer;
+import com.brunogtavares.popmovies.viewmodel.MovieDetailViewModel;
+import com.brunogtavares.popmovies.viewmodel.MovieDetailViewModelFactory;
 import com.brunogtavares.popmovies.webservice.NetworkUtils;
 import com.brunogtavares.popmovies.webservice.ThemoviedbApiClient;
 import com.squareup.picasso.Picasso;
@@ -57,6 +61,9 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     private static final String REVIEW_RV_STATE_KEY = "REVIEW_RV_STATE";
     private static final String SCROLL_POSITION_KEY = "SCROLL_POSITION_KEY";
 
+    private static Parcelable mTrailerRvState, mReviewRVState;
+    private static int[] scrollPositions;
+
     // This number will be adjustable for shared preferences later
     private static final int MOVIE_TRAILER_LIMIT = 3;
     private static final int MOVIE_REVIEW_LIMIT = 3;
@@ -66,9 +73,6 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     private MovieReviewAdapter mMovieReviewAdapter;
 
     private static LoaderManager.LoaderCallbacks<List<MovieReview>> mReviewsLoaderListener;
-
-    private static Parcelable mTrailerRvState, mReviewRVState;
-    private static int[] scrollPositions;
 
     @BindView(R.id.iv_movie_backdrop) ImageView mBackdrop;
     @BindView(R.id.iv_movie_poster_thumbnail) ImageView mPosterThumbnail;
@@ -85,6 +89,9 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     // Database
     private MovieDatabase mDb;
 
+    private AppExecutors mTask;
+    private MovieDetailViewModel mViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,8 +99,17 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
         ButterKnife.bind(this);
 
+        mTask = AppExecutors.getInstance();
         mDb = MovieDatabase.getInstance(getApplicationContext());
 
+        if(savedInstanceState != null) {
+            mMovie = savedInstanceState.getParcelable(MOVIE_BUNDLE_KEY);
+        }
+        else {
+            mMovie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
+        }
+
+        initViewModel();
         populateUI();
 
         mMovieTrailerRVLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -200,7 +216,6 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     }
 
     private void populateUI(){
-        mMovie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
 
         setTitle(mMovie.getTitle());
         Picasso.with(this).load(mMovie.getBackDropPath()).into(mBackdrop);
@@ -211,7 +226,24 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
         setColorFavoriteButton();
 
+    }
 
+    private void initViewModel() {
+
+        if (mMovie == null) return;
+
+        MovieDetailViewModelFactory factory =
+                new MovieDetailViewModelFactory(MovieDatabase.getInstance(MovieDetailActivity.this), mMovie.getMovieId());
+        mViewModel = ViewModelProviders.of(this, factory).get(MovieDetailViewModel.class);
+        mViewModel.getMovie().observe(this, new Observer<Movie>() {
+            @Override
+            public void onChanged(@Nullable Movie movie) {
+                if(movie != null) {
+                    movie.setFavorite(true);
+                    setColorFavoriteButton();
+                }
+            }
+        });
     }
 
     @OnClick(R.id.fab_favorites)
@@ -234,7 +266,6 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
                     "Successfully removed from favorites", Toast.LENGTH_SHORT).show();
         }
         else {
-
             mMovie.setFavorite(true);
             setColorFavoriteButton();
 
