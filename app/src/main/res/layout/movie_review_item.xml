@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
+        android:textColor="@android:color/white"
         tools:text="@string/large_text"/>
 
     <TextView
@@ -22,6 +23,7 @@
         android:layout_marginTop="8dp"
         android:gravity="end"
         tools:text="Reviewed By"
+        android:textColor="@android:color/white"
         android:textAlignment="textEnd"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 

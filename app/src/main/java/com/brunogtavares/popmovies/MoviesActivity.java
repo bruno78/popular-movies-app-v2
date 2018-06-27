@@ -58,7 +58,6 @@ public class MoviesActivity extends AppCompatActivity
     private MoviesViewModel mMovieViewModel;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

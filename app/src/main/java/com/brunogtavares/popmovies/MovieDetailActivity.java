@@ -19,7 +19,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,6 +87,8 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     @BindView(R.id.rv_movie_trailer) RecyclerView mMovieTrailerRecyclerView;
     @BindView(R.id.rv_movie_review) RecyclerView mMovieReviewRecyclerView;
     @BindView(R.id.sv_movie_detail) ScrollView mScrollView;
+    @BindView(R.id.ll_reviews_layout) LinearLayout mReviewsLayout;
+    @BindView(R.id.ll_trailers_layout) LinearLayout mTrailersLayout;
 
     private Movie mMovie;
 
@@ -137,9 +141,11 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
             @Override
             public void onLoadFinished(Loader<List<MovieReview>> loader, List<MovieReview> movieReviews) {
 
-                Log.d(LOG_TAG, "" + movieReviews.size());
-
                 mMovieReviewAdapter.setMovieReviews(movieReviews);
+
+                if(movieReviews.size() == 0) {
+                    mReviewsLayout.setVisibility(View.GONE);
+                }
 
                 if(mReviewRVState != null) {
                     mMovieReviewRVLayoutManager.onRestoreInstanceState(mReviewRVState);
@@ -176,6 +182,10 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     public void onLoadFinished(Loader<List<MovieTrailer>> loader, List<MovieTrailer> data) {
 
         mMovieTrailerAdapter.setMovieTrailers(data);
+
+        if(data.size() == 0) {
+            mTrailersLayout.setVisibility(View.GONE);
+        }
 
         if(mTrailerRvState != null) {
             mMovieTrailerRVLayoutManager.onRestoreInstanceState(mTrailerRvState);

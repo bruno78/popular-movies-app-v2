@@ -3,7 +3,6 @@ package com.brunogtavares.popmovies.loader;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.brunogtavares.popmovies.model.MovieReview;
 import com.brunogtavares.popmovies.model.MovieTrailer;
 import com.brunogtavares.popmovies.webservice.ThemoviedbApiClient;
 
