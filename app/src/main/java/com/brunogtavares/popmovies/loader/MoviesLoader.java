@@ -1,4 +1,4 @@
-package com.brunogtavares.popmovies;
+package com.brunogtavares.popmovies.loader;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;

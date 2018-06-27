@@ -27,6 +27,8 @@ import android.widget.Toast;
 import com.brunogtavares.popmovies.adapter.MovieReviewAdapter;
 import com.brunogtavares.popmovies.adapter.MovieTrailerAdapter;
 import com.brunogtavares.popmovies.database.MovieDatabase;
+import com.brunogtavares.popmovies.loader.MovieReviewsLoader;
+import com.brunogtavares.popmovies.loader.MovieTrailersLoader;
 import com.brunogtavares.popmovies.model.Movie;
 import com.brunogtavares.popmovies.model.MovieReview;
 import com.brunogtavares.popmovies.model.MovieTrailer;
@@ -109,6 +111,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
             mMovie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
         }
 
+
         initViewModel();
         populateUI();
 
@@ -124,26 +127,11 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         mMovieReviewAdapter = new MovieReviewAdapter();
         mMovieReviewRecyclerView.setAdapter(mMovieReviewAdapter);
 
+        // Load Movie Reviews
         mReviewsLoaderListener = new LoaderManager.LoaderCallbacks<List<MovieReview>>() {
             @Override
             public Loader<List<MovieReview>> onCreateLoader(final int movieId, Bundle bundle) {
-                return new AsyncTaskLoader<List<MovieReview>>(MovieDetailActivity.this) {
-
-                    List<MovieReview> movieReviews = new ArrayList<>();
-
-                    @Override
-                    public List<MovieReview> loadInBackground() {
-
-                        movieReviews =
-                                ThemoviedbApiClient.getMovieReviews(mMovie.getMovieId(), MOVIE_REVIEW_LIMIT);
-                        return movieReviews;
-                    }
-
-                    @Override
-                    protected void onStartLoading() {
-                        forceLoad();
-                    }
-                };
+                return new MovieReviewsLoader(MovieDetailActivity.this, mMovie.getMovieId(), MOVIE_REVIEW_LIMIT);
             }
 
             @Override
@@ -177,6 +165,34 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         }
 
     }
+
+    // Handles Loading Movie Trailer
+    @Override
+    public Loader<List<MovieTrailer>> onCreateLoader(int mMovieId, Bundle args) {
+        return new MovieTrailersLoader(this, mMovie.getMovieId(), MOVIE_TRAILER_LIMIT);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<MovieTrailer>> loader, List<MovieTrailer> data) {
+
+        mMovieTrailerAdapter.setMovieTrailers(data);
+
+        if(mTrailerRvState != null) {
+            mMovieTrailerRVLayoutManager.onRestoreInstanceState(mTrailerRvState);
+            mTrailerRvState = null;
+        }
+        if(scrollPositions != null) {
+            mScrollView.scrollTo(scrollPositions[0], scrollPositions[1]);
+            scrollPositions = null;
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<MovieTrailer>> loader) {
+
+    }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -308,56 +324,4 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
     }
 
-    // Handles Movie Trailer TASK
-    @Override
-    public Loader<List<MovieTrailer>> onCreateLoader(int mMovieId, Bundle args) {
-        return new AsyncTaskLoader<List<MovieTrailer>>(MovieDetailActivity.this) {
-
-            List<MovieTrailer> movieTrailers = new ArrayList<>();
-
-            @Override
-            public List<MovieTrailer> loadInBackground() {
-
-                movieTrailers =
-                        ThemoviedbApiClient.getMovietrailers(mMovie.getMovieId(), MOVIE_TRAILER_LIMIT);
-                return movieTrailers;
-            }
-
-            @Override
-            protected void onStartLoading() {
-                if (movieTrailers.size() > 0) {
-                    deliverResult(movieTrailers);
-                } else {
-                    forceLoad();
-                }
-            }
-
-            @Override
-            public void deliverResult(@Nullable List<MovieTrailer> data) {
-                movieTrailers = data;
-                super.deliverResult(data);
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<MovieTrailer>> loader, List<MovieTrailer> data) {
-
-        mMovieTrailerAdapter.setMovieTrailers(data);
-
-        if(mTrailerRvState != null) {
-            mMovieTrailerRVLayoutManager.onRestoreInstanceState(mTrailerRvState);
-            mTrailerRvState = null;
-        }
-        if(scrollPositions != null) {
-            mScrollView.scrollTo(scrollPositions[0], scrollPositions[1]);
-            scrollPositions = null;
-        }
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<MovieTrailer>> loader) {
-
-    }
 }

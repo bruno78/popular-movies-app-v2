@@ -5,9 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.brunogtavares.popmovies.adapter.MovieAdapter;
+import com.brunogtavares.popmovies.loader.MoviesLoader;
 import com.brunogtavares.popmovies.model.Movie;
 import com.brunogtavares.popmovies.viewmodel.MoviesViewModel;
 
@@ -185,7 +184,11 @@ public class MoviesActivity extends AppCompatActivity
         mMovieViewModel.getAllFavoriteMovies().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
+
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+
                 mMovieAdapter.setMovieList(movies);
+
                 if (movies == null) {
                     showErrorMessage();
                 }
@@ -238,8 +241,9 @@ public class MoviesActivity extends AppCompatActivity
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
 
         mLoadingIndicator.setVisibility(View.INVISIBLE);
+
         // Clear the adapter from previous data
-        // resetAdapter();
+        resetAdapter();
 
         // If movies is not empty or null populate the adapter
         if(movies == null) {
