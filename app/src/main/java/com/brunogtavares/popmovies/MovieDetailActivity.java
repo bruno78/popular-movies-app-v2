@@ -64,12 +64,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     private static final String REVIEW_RV_STATE_KEY = "REVIEW_RV_STATE";
     private static final String SCROLL_POSITION_KEY = "SCROLL_POSITION_KEY";
 
-    // Constant for default task when movie is not in Favorites.
-    private static final int DEFAULT_MOVIE_ID = -1;
-    private static final String MOVIE_INSTANCE_KEY = "MOVIE_INSTANCE_KEY";
-    private int mMovieId = DEFAULT_MOVIE_ID;
-
-    private Boolean mMovieState;
+    private Boolean mIsFavorite;
     private static Parcelable mTrailerRvState, mReviewRVState;
     private static int[] scrollPositions;
 
@@ -115,13 +110,14 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
         if(savedInstanceState != null) {
             // Get movie from previous state
+
             mMovie = savedInstanceState.getParcelable(MOVIE_BUNDLE_KEY);
-            mMovieState = savedInstanceState.getBoolean(MOVIE_STATE_KEY);
+            mIsFavorite = savedInstanceState.getBoolean(MOVIE_STATE_KEY);
         }
         else {
             // Get movie from intent
             mMovie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
-            mMovieState = false;
+            mIsFavorite = false;
         }
 
 
@@ -209,7 +205,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         super.onSaveInstanceState(outState);
 
         outState.putParcelable(MOVIE_BUNDLE_KEY, mMovie);
-        outState.putBoolean(MOVIE_STATE_KEY, mMovieState);
+        outState.putBoolean(MOVIE_STATE_KEY, mIsFavorite);
 
         mTrailerRvState = mMovieTrailerRVLayoutManager.onSaveInstanceState();
         outState.putParcelable(TRAILER_RV_STATE_KEY, mTrailerRvState);
@@ -225,7 +221,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mMovie = savedInstanceState.getParcelable(MOVIE_BUNDLE_KEY);
-        mMovieState = savedInstanceState.getBoolean(MOVIE_STATE_KEY);
+        mIsFavorite = savedInstanceState.getBoolean(MOVIE_STATE_KEY);
         mTrailerRvState = savedInstanceState.getParcelable(TRAILER_RV_STATE_KEY);
         mReviewRVState = savedInstanceState.getParcelable(REVIEW_RV_STATE_KEY);
         scrollPositions = savedInstanceState.getIntArray(SCROLL_POSITION_KEY);
@@ -282,7 +278,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
             @Override
             public void onChanged(@Nullable Movie movie) {
                 if(movie != null) {
-                    mMovieState = true;
+                    mIsFavorite = true;
                     setColorFavoriteButton();
                 }
             }
@@ -294,9 +290,10 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
         AppExecutors task = AppExecutors.getInstance();
 
-        if (mMovieState) {
-            mMovieState = false;
+        if (mIsFavorite) {
+            mIsFavorite = false;
             setColorFavoriteButton();
+
             task.diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -307,7 +304,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
                     "Successfully removed from favorites", Toast.LENGTH_SHORT).show();
         }
         else {
-            mMovieState = true;
+            mIsFavorite = true;
             setColorFavoriteButton();
 
             task.diskIO().execute(new Runnable() {
@@ -324,7 +321,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     }
 
     private void setColorFavoriteButton() {
-        if (mMovieState) {
+        if (mIsFavorite) {
             int goldColor = ResourcesCompat.getColor(getResources(), R.color.goldStar, null);
             mAddFavoritesButton.setColorFilter(goldColor);
         }

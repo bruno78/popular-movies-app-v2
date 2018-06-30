@@ -43,8 +43,13 @@ public class MoviesActivity extends AppCompatActivity
     private static Parcelable mMovieListState;
 
     private static final int MOVIE_LOADER_ID = 100;
-    private static final String POPULAR = "popular";
-    private static final String TOP_RATED = "top_rated";
+    private static final String POPULAR_SORT = "popular";
+    private static final String TOP_RATED_SORT = "top_rated";
+
+    private static final int FAVORITES = R.id.action_favorites;
+    private static final int POPULAR = R.id.action_sort_by_popular_movies;
+    private static final int TOP_RATED = R.id.action_sort_by_top_rated;
+
 
     private GridLayoutManager mGridLayoutManager;
     private MovieAdapter mMovieAdapter;
@@ -87,12 +92,12 @@ public class MoviesActivity extends AppCompatActivity
             sortBy = savedInstanceState.getInt(SORT_BY_KEY);
         }
         else {
-            sortBy = R.id.action_sort_by_popular_movies;
+            sortBy = POPULAR;
         }
 
         mMovieViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
 
-        if(sortBy == R.id.action_favorites) {
+        if (sortBy == FAVORITES) {
             initViewModel();
         }
         else {
@@ -123,6 +128,7 @@ public class MoviesActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         if (sortBy == R.id.action_favorites) {
+            mLoadingIndicator.setVisibility(View.GONE);
             initViewModel();
         }
     }
@@ -147,16 +153,16 @@ public class MoviesActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         sortBy = item.getItemId();
         switch (sortBy) {
-            case R.id.action_sort_by_popular_movies:
+            case POPULAR:
                 break;
-            case R.id.action_sort_by_top_rated:
+            case TOP_RATED:
                 break;
-            case R.id.action_favorites:
+            case FAVORITES:
                 break;
         }
 
         resetAdapter();
-        if (sortBy == R.id.action_favorites) {
+        if (sortBy == FAVORITES) {
             initViewModel();
         } else {
             getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
@@ -179,7 +185,7 @@ public class MoviesActivity extends AppCompatActivity
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
 
-                if (sortBy == R.id.action_favorites) {
+                if (sortBy == FAVORITES) {
                     mMovieAdapter.setMovieList(movies);
 
                     if (movies == null) {
@@ -223,11 +229,11 @@ public class MoviesActivity extends AppCompatActivity
 
         String sort = "";
 
-        if(sortBy == R.id.action_sort_by_popular_movies) {
-            sort = POPULAR;
+        if(sortBy == POPULAR) {
+            sort = POPULAR_SORT;
         }
-        else if (sortBy == R.id.action_sort_by_top_rated) {
-            sort = TOP_RATED;
+        else if (sortBy == TOP_RATED) {
+            sort = TOP_RATED_SORT;
         }
 
         return new MoviesLoader(this, sort);
@@ -273,7 +279,7 @@ public class MoviesActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<List<Movie>> loader) {
-        // resetAdapter();
+        resetAdapter();
     }
 
 }
