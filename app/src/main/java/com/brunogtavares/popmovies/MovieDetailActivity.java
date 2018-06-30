@@ -110,7 +110,6 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
         if(savedInstanceState != null) {
             // Get movie from previous state
-
             mMovie = savedInstanceState.getParcelable(MOVIE_BUNDLE_KEY);
             mIsFavorite = savedInstanceState.getBoolean(MOVIE_STATE_KEY);
         }
@@ -182,7 +181,6 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         if(data.size() == 0) {
             mTrailersLayout.setVisibility(View.GONE);
         }
-
         if(mTrailerRvState != null) {
             mMovieTrailerRVLayoutManager.onRestoreInstanceState(mTrailerRvState);
             mTrailerRvState = null;
@@ -198,7 +196,6 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     public void onLoaderReset(Loader<List<MovieTrailer>> loader) {
 
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -262,8 +259,6 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         mMovieReviewRecyclerView.setHasFixedSize(true);
         mMovieReviewAdapter = new MovieReviewAdapter();
         mMovieReviewRecyclerView.setAdapter(mMovieReviewAdapter);
-
-
 
     }
 
@@ -342,7 +337,6 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         boolean isIntentSafe = activities.size() > 0;
 
         if (isIntentSafe) startActivity(youtubeIntent);
-
 
     }
 

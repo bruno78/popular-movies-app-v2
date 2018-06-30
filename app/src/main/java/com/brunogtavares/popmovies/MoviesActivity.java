@@ -127,7 +127,7 @@ public class MoviesActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if (sortBy == R.id.action_favorites) {
+        if (sortBy == FAVORITES) {
             mLoadingIndicator.setVisibility(View.GONE);
             initViewModel();
         }
@@ -136,6 +136,7 @@ public class MoviesActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        // TODO: Find proper way to restore based on sortBy
         if (mMovieListState != null) {
             mGridLayoutManager.onRestoreInstanceState(mMovieListState);
         }
@@ -217,7 +218,6 @@ public class MoviesActivity extends AppCompatActivity
 
     }
 
-
     private void resetAdapter() {
         // Create a new adapter with an empty movie list
         mMovieAdapter.setMovieList(new ArrayList<Movie>());
@@ -275,7 +275,6 @@ public class MoviesActivity extends AppCompatActivity
         // Update empty state with no connection error message
         mErrorMessageDisplay.setText(R.string.no_connection);
     }
-
 
     @Override
     public void onLoaderReset(Loader<List<Movie>> loader) {
