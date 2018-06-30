@@ -104,7 +104,7 @@ public class MoviesActivity extends AppCompatActivity
             populateMovieList();
         }
 
-        Log.v("main page state", "ON CREATE IS BEING CALLED");
+        Log.v(LOG_TAG, "ON CREATE IS BEING CALLED");
 
     }
 
@@ -116,7 +116,7 @@ public class MoviesActivity extends AppCompatActivity
         outState.putParcelable(MOVIE_LIST_STATE_KEY, mMovieListState);
 
         super.onSaveInstanceState(outState);
-        Log.v("main page state", "ON SAVE INSTANCE STATE IS BEING CALLED");
+        Log.v(LOG_TAG, "ON SAVE INSTANCE STATE IS BEING CALLED");
     }
 
     @Override
@@ -125,7 +125,7 @@ public class MoviesActivity extends AppCompatActivity
 
         sortBy = savedInstanceState.getInt(SORT_BY_KEY);
         mMovieListState = savedInstanceState.getParcelable(MOVIE_LIST_STATE_KEY);
-        Log.v("main page state", "ON RESTORE INSTANCE IS BEING CALLED");
+        Log.v(LOG_TAG, "ON RESTORE INSTANCE IS BEING CALLED");
     }
 
     @Override
@@ -135,7 +135,7 @@ public class MoviesActivity extends AppCompatActivity
             mLoadingIndicator.setVisibility(View.GONE);
             initViewModel();
         }
-        Log.v("main page state", "ON START IS BEING CALLED");
+        Log.v(LOG_TAG, "ON START IS BEING CALLED");
     }
 
     @Override
@@ -145,25 +145,25 @@ public class MoviesActivity extends AppCompatActivity
         if (mMovieListState != null) {
             mGridLayoutManager.onRestoreInstanceState(mMovieListState);
         }
-        Log.v("main page state", "ON RESUME IS BEING CALLED");
+        Log.v(LOG_TAG, "ON RESUME IS BEING CALLED");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.v("main page state", "ON DESTROY IS BEING CALLED");
+        Log.v(LOG_TAG, "ON DESTROY IS BEING CALLED");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.v("main page state", "ON STOP IS BEING CALLED");
+        Log.v(LOG_TAG, "ON STOP IS BEING CALLED");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.v("main page state", "ON PAUSE IS BEING CALLED");
+        Log.v(LOG_TAG, "ON PAUSE IS BEING CALLED");
     }
 
     // Creates the menu
