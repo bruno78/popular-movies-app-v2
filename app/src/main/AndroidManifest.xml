@@ -19,12 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MovieDetailActivity"
-            android:parentActivityName="com.brunogtavares.popmovies.MoviesActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.brunogtavares.popmovies.MoviesActivity"/>
-        </activity>
+        <activity android:name=".MovieDetailActivity" />
     </application>
 
 </manifest>

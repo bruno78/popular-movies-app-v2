@@ -24,11 +24,12 @@ public interface MovieDao {
     void insert(Movie movie);
 
     @Delete
-    void delete (Movie... movies);
+    void delete (Movie... movie);
 
     @Query("SELECT * FROM movie")
     LiveData<List<Movie>> getAllMovies();
 
-    @Query("SELECT * FROM movie WHERE movieId = :movieId")
-    LiveData<Movie> getMovieById(final int movieId);
+    @Query("SELECT * FROM movie WHERE movie_id = :id")
+    LiveData<Movie> getMovieById(int id);
+
 }

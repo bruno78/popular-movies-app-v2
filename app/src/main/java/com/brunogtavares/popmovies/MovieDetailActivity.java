@@ -11,14 +11,12 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,10 +35,8 @@ import com.brunogtavares.popmovies.model.MovieTrailer;
 import com.brunogtavares.popmovies.viewmodel.MovieDetailViewModel;
 import com.brunogtavares.popmovies.viewmodel.MovieDetailViewModelFactory;
 import com.brunogtavares.popmovies.webservice.NetworkUtils;
-import com.brunogtavares.popmovies.webservice.ThemoviedbApiClient;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -57,14 +53,23 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
     private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
 
-    private static final String MOVIE_BUNDLE_KEY = "MOVIE_KEY";
+    // Extra for the movie received from the intent
+    protected static final String MOVIE_BUNDLE_KEY = "MOVIE_KEY";
     private static final int MOVIE_TRAILERS_LOADER_ID = 101;
     private static final int MOVIE_REVIEWS_LOADER_ID = 102;
 
+    // Extra for the movie received from after rotation
+    private static final String MOVIE_STATE_KEY = "MOVIE_STATE_KEY";
     private static final String TRAILER_RV_STATE_KEY = "TRAILER_RV_STATE";
     private static final String REVIEW_RV_STATE_KEY = "REVIEW_RV_STATE";
     private static final String SCROLL_POSITION_KEY = "SCROLL_POSITION_KEY";
 
+    // Constant for default task when movie is not in Favorites.
+    private static final int DEFAULT_MOVIE_ID = -1;
+    private static final String MOVIE_INSTANCE_KEY = "MOVIE_INSTANCE_KEY";
+    private int mMovieId = DEFAULT_MOVIE_ID;
+
+    private Boolean mMovieState;
     private static Parcelable mTrailerRvState, mReviewRVState;
     private static int[] scrollPositions;
 
@@ -109,27 +114,22 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         mDb = MovieDatabase.getInstance(getApplicationContext());
 
         if(savedInstanceState != null) {
+            // Get movie from previous state
             mMovie = savedInstanceState.getParcelable(MOVIE_BUNDLE_KEY);
+            mMovieState = savedInstanceState.getBoolean(MOVIE_STATE_KEY);
         }
         else {
+            // Get movie from intent
             mMovie = getIntent().getParcelableExtra(MOVIE_BUNDLE_KEY);
+            mMovieState = false;
         }
 
 
         initViewModel();
-        populateUI();
 
-        mMovieTrailerRVLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mMovieTrailerRecyclerView.setLayoutManager(mMovieTrailerRVLayoutManager);
-        mMovieTrailerRecyclerView.setHasFixedSize(true);
-        mMovieTrailerAdapter = new MovieTrailerAdapter(this);
-        mMovieTrailerRecyclerView.setAdapter(mMovieTrailerAdapter);
+        setColorFavoriteButton();
 
-        mMovieReviewRVLayoutManager = new LinearLayoutManager(this);
-        mMovieReviewRecyclerView.setLayoutManager(mMovieReviewRVLayoutManager);
-        mMovieReviewRecyclerView.setHasFixedSize(true);
-        mMovieReviewAdapter = new MovieReviewAdapter();
-        mMovieReviewRecyclerView.setAdapter(mMovieReviewAdapter);
+        populateMovieUI();
 
         // Load Movie Reviews
         mReviewsLoaderListener = new LoaderManager.LoaderCallbacks<List<MovieReview>>() {
@@ -209,6 +209,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         super.onSaveInstanceState(outState);
 
         outState.putParcelable(MOVIE_BUNDLE_KEY, mMovie);
+        outState.putBoolean(MOVIE_STATE_KEY, mMovieState);
 
         mTrailerRvState = mMovieTrailerRVLayoutManager.onSaveInstanceState();
         outState.putParcelable(TRAILER_RV_STATE_KEY, mTrailerRvState);
@@ -224,6 +225,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mMovie = savedInstanceState.getParcelable(MOVIE_BUNDLE_KEY);
+        mMovieState = savedInstanceState.getBoolean(MOVIE_STATE_KEY);
         mTrailerRvState = savedInstanceState.getParcelable(TRAILER_RV_STATE_KEY);
         mReviewRVState = savedInstanceState.getParcelable(REVIEW_RV_STATE_KEY);
         scrollPositions = savedInstanceState.getIntArray(SCROLL_POSITION_KEY);
@@ -241,16 +243,31 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
         }
     }
 
-    private void populateUI(){
+    private void populateMovieUI(){
 
+        // Movie info
         setTitle(mMovie.getTitle());
-        Picasso.with(this).load(mMovie.getBackDropPath()).into(mBackdrop);
+        Picasso.with(this).load(mMovie.getBackdropPath()).into(mBackdrop);
         Picasso.with(this).load(mMovie.getPosterPath()).into(mPosterThumbnail);
         mMovieRating.setText(Double.toString(mMovie.getRating()) + "/10");
         mDateReleased.setText(mMovie.getReleaseDate().split("-")[0]);
         mSinopsys.setText(mMovie.getSynopsis());
 
-        setColorFavoriteButton();
+        // Movie Trailer
+        mMovieTrailerRVLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mMovieTrailerRecyclerView.setLayoutManager(mMovieTrailerRVLayoutManager);
+        mMovieTrailerRecyclerView.setHasFixedSize(true);
+        mMovieTrailerAdapter = new MovieTrailerAdapter(this);
+        mMovieTrailerRecyclerView.setAdapter(mMovieTrailerAdapter);
+
+        // Movie Review
+        mMovieReviewRVLayoutManager = new LinearLayoutManager(this);
+        mMovieReviewRecyclerView.setLayoutManager(mMovieReviewRVLayoutManager);
+        mMovieReviewRecyclerView.setHasFixedSize(true);
+        mMovieReviewAdapter = new MovieReviewAdapter();
+        mMovieReviewRecyclerView.setAdapter(mMovieReviewAdapter);
+
+
 
     }
 
@@ -265,7 +282,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
             @Override
             public void onChanged(@Nullable Movie movie) {
                 if(movie != null) {
-                    movie.setFavorite(true);
+                    mMovieState = true;
                     setColorFavoriteButton();
                 }
             }
@@ -273,15 +290,13 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     }
 
     @OnClick(R.id.fab_favorites)
-    public void addFavorites() {
+    public void addOrRemoveFavorites() {
 
         AppExecutors task = AppExecutors.getInstance();
 
-        if (mMovie.isFavorite()) {
-
-            mMovie.setFavorite(false);
+        if (mMovieState) {
+            mMovieState = false;
             setColorFavoriteButton();
-
             task.diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -292,7 +307,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
                     "Successfully removed from favorites", Toast.LENGTH_SHORT).show();
         }
         else {
-            mMovie.setFavorite(true);
+            mMovieState = true;
             setColorFavoriteButton();
 
             task.diskIO().execute(new Runnable() {
@@ -309,7 +324,7 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
     }
 
     private void setColorFavoriteButton() {
-        if (mMovie.isFavorite()) {
+        if (mMovieState) {
             int goldColor = ResourcesCompat.getColor(getResources(), R.color.goldStar, null);
             mAddFavoritesButton.setColorFilter(goldColor);
         }

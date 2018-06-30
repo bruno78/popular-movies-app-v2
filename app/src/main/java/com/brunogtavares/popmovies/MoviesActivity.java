@@ -37,8 +37,6 @@ public class MoviesActivity extends AppCompatActivity
 
     private static final String LOG_TAG = MoviesActivity.class.getName();
 
-    private static final String MOVIE_BUNDLE_KEY = "MOVIE_KEY";
-
     private int sortBy;
     private static final String MOVIE_LIST_STATE_KEY = "MOVIE_LIST_STATE";
     private static final String SORT_BY_KEY = "SORT_BY";
@@ -56,7 +54,6 @@ public class MoviesActivity extends AppCompatActivity
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
     private MoviesViewModel mMovieViewModel;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,14 +83,14 @@ public class MoviesActivity extends AppCompatActivity
         // so the list can be populated in the user interface
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        mMovieViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
-
         if (savedInstanceState != null) {
             sortBy = savedInstanceState.getInt(SORT_BY_KEY);
         }
         else {
             sortBy = R.id.action_sort_by_popular_movies;
         }
+
+        mMovieViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
 
         if(sortBy == R.id.action_favorites) {
             initViewModel();
@@ -133,8 +130,6 @@ public class MoviesActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Log.v("main page state", "onResume");
-
         if (mMovieListState != null) {
             mGridLayoutManager.onRestoreInstanceState(mMovieListState);
         }
@@ -174,7 +169,7 @@ public class MoviesActivity extends AppCompatActivity
     @Override
     public void onClick(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
-        intent.putExtra(MOVIE_BUNDLE_KEY, movie);
+        intent.putExtra(MovieDetailActivity.MOVIE_BUNDLE_KEY, movie);
         startActivity(intent);
 
     }
@@ -184,15 +179,15 @@ public class MoviesActivity extends AppCompatActivity
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
 
-                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                if (sortBy == R.id.action_favorites) {
+                    mMovieAdapter.setMovieList(movies);
 
-                mMovieAdapter.setMovieList(movies);
-
-                if (movies == null) {
-                    showErrorMessage();
-                }
-                else if (movies.size() == 0) {
-                    showEmptyState();
+                    if (movies == null) {
+                        showErrorMessage();
+                    }
+                    else if (movies.size() == 0) {
+                        showEmptyState();
+                    }
                 }
             }
         });
@@ -200,12 +195,15 @@ public class MoviesActivity extends AppCompatActivity
 
     private void populateMovieList() {
 
+        // creating the loader callback
+        LoaderManager.LoaderCallbacks<List<Movie>> callback = MoviesActivity.this;
+
         // Before populating the list, check for the network status
         boolean isConnected = checkForNetworkStatus(this);
         // If it's connected it will call the load manager otherwise will display no connection message
         if (isConnected) {
             // Start Loader Manager
-            getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
+            getLoaderManager().initLoader(MOVIE_LOADER_ID, null, callback);
         }
         else {
             showErrorMessage();
@@ -238,11 +236,9 @@ public class MoviesActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
-
         mLoadingIndicator.setVisibility(View.INVISIBLE);
+        mMovieAdapter.setMovieList(movies);
 
-        // Clear the adapter from previous data
-        resetAdapter();
 
         // If movies is not empty or null populate the adapter
         if(movies == null) {
@@ -252,29 +248,32 @@ public class MoviesActivity extends AppCompatActivity
             showEmptyState();
         }
         else {
-            mLoadingIndicator.setVisibility(View.GONE);
-            mMovieAdapter.setMovieList(movies);
-            mRecyclerView.setAdapter(mMovieAdapter);
+            displayMovies();
         }
     }
 
+    private void displayMovies() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+    }
     private void showEmptyState() {
-        mLoadingIndicator.setVisibility(View.GONE);
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
         // Set empty state text to display "No movies found."
         mErrorMessageDisplay.setText(R.string.no_movies);
     }
 
     private void showErrorMessage() {
-        mLoadingIndicator.setVisibility(View.GONE);
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
         // Update empty state with no connection error message
         mErrorMessageDisplay.setText(R.string.no_connection);
     }
 
+
     @Override
     public void onLoaderReset(Loader<List<Movie>> loader) {
-        resetAdapter();
+        // resetAdapter();
     }
 
 }

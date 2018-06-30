@@ -1,6 +1,9 @@
 package com.brunogtavares.popmovies.model;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,29 +14,31 @@ import android.os.Parcelable;
  * Using Parcelable {@link: http://www.vogella.com/tutorials/AndroidParcelable/article.html}
  */
 
-@Entity(tableName = "movie")
+@Entity(tableName = "movie", indices = {@Index(value = {"movie_id"}, unique = true)})
 public class Movie implements Parcelable {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "movie_id")
     private int movieId;
     private String title;
+    @ColumnInfo(name = "poster_path")
     private String posterPath;
-    private String backDropPath;
+    @ColumnInfo(name = "backdrop_path")
+    private String backdropPath;
     private String synopsis;
     private double rating;
+    @ColumnInfo(name = "release_date")
     private String releaseDate;
-    private boolean favorite;
 
-    public Movie( int movieId, String title, String posterPath, String backDropPath,
+    public Movie( int movieId, String title, String posterPath, String backdropPath,
                   String synopsis, double rating, String releaseDate ) {
         this.movieId = movieId;
         this.title = title;
         this.posterPath = posterPath;
-        this.backDropPath = backDropPath;
+        this.backdropPath = backdropPath;
         this.synopsis = synopsis;
         this.rating = rating;
         this.releaseDate = releaseDate;
-        this.favorite = false;
     }
 
     public int getMovieId() { return movieId; }
@@ -56,9 +61,9 @@ public class Movie implements Parcelable {
         this.posterPath = posterPath;
     }
 
-    public String getBackDropPath() { return backDropPath; }
+    public String getBackdropPath() { return backdropPath; }
 
-    public void setBackDropPath(String backDrop) { this.backDropPath = backDrop; }
+    public void setBackdropPath(String backDrop) { this.backdropPath = backDrop; }
 
     public String getSynopsis() {
         return synopsis;
@@ -84,25 +89,16 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
-    public boolean isFavorite() {
-        return favorite;
-    }
-
-    public void setFavorite(boolean favorite) {
-        this.favorite = favorite;
-    }
-
     @Override
     public String toString() {
         return "{" + "\n" +
-                "id: " + getMovieId() + "\n" +
+                "MovieId: " + getMovieId() + "\n" +
                 "title: " + getTitle() + "\n" +
                 "poster path: " + getPosterPath() + "\n" +
-                "backdrop path: " + getBackDropPath() + "\n" +
+                "backdrop path: " + getBackdropPath() + "\n" +
                 "synopsis: " + getSynopsis() + "\n" +
                 "average rating: " + getRating() + "\n" +
                 "release date: " + getReleaseDate() + "\n" +
-                "is favorite: " + isFavorite() + "\n" +
                 "}";
     }
 
@@ -123,11 +119,10 @@ public class Movie implements Parcelable {
         movieId = in.readInt();
         title = in.readString();
         posterPath = in.readString();
-        backDropPath = in.readString();
+        backdropPath = in.readString();
         synopsis = in.readString();
         releaseDate = in.readString();
         rating = in.readDouble();
-        favorite = in.readByte() != 0;
     }
 
     @Override
@@ -140,10 +135,9 @@ public class Movie implements Parcelable {
         parcel.writeInt(movieId);
         parcel.writeString(title);
         parcel.writeString(posterPath);
-        parcel.writeString(backDropPath);
+        parcel.writeString(backdropPath);
         parcel.writeString(synopsis);
         parcel.writeString(releaseDate);
         parcel.writeDouble(rating);
-        parcel.writeByte((byte) (favorite ? 1 : 0));
     }
 }

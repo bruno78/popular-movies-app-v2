@@ -1,5 +1,6 @@
 package com.brunogtavares.popmovies.model;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
@@ -14,16 +15,17 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
  */
 
 @Entity(foreignKeys = @ForeignKey(entity = Movie.class,
-                                    parentColumns = "movieId",
-                                    childColumns = "movieId",
+                                    parentColumns = "movie_id",
+                                    childColumns = "movie_id",
                                     onDelete = CASCADE),
-           indices = {@Index("movieId")})
+           indices = {@Index("movie_id")})
 public class MovieReview {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String author;
     private String content;
+    @ColumnInfo(name = "movie_id")
     private int movieId;
 
     public MovieReview(int movieId, String author, String content) {
