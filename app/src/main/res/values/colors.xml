@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="greyBackground">#333</color>
     <color name="goldStar">#FFD700</color>
+    <color name="redFavorite">#8b0000</color>
 </resources>

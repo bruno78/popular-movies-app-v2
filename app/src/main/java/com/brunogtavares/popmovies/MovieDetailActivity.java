@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Parcelable;
@@ -49,7 +50,8 @@ import butterknife.OnClick;
  * reviews. More info on loaders in the same activity:
  * https://stackoverflow.com/questions/15643907/multiple-loaders-in-same-activity
  */
-public class MovieDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<MovieTrailer>>, MovieTrailerAdapter.MovieTrailerOnClickHandler {
+public class MovieDetailActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<List<MovieTrailer>>, MovieTrailerAdapter.MovieTrailerOnClickHandler {
 
     private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
 
@@ -317,11 +319,11 @@ public class MovieDetailActivity extends AppCompatActivity implements LoaderMana
 
     private void setColorFavoriteButton() {
         if (mIsFavorite) {
-            int goldColor = ResourcesCompat.getColor(getResources(), R.color.goldStar, null);
-            mAddFavoritesButton.setColorFilter(goldColor);
+            mAddFavoritesButton.setColorFilter(ResourcesCompat.getColor(getResources(), R.color.redFavorite, null));
         }
         else {
             mAddFavoritesButton.setColorFilter(Color.WHITE);
+            mAddFavoritesButton.setImageResource(R.drawable.ic_favorite_black_24dp);
         }
     }
 

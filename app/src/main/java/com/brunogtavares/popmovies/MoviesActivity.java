@@ -265,7 +265,11 @@ public class MoviesActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
-        mMovieAdapter.setMovieList(movies);
+
+        if(sortBy != FAVORITES) {
+            mMovieAdapter.setMovieList(movies);
+        }
+
 
         // If movies is not empty or null populate the adapter
         if(movies == null) {
