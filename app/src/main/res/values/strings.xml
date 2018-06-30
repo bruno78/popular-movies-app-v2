@@ -120,4 +120,6 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="release_date_label">Release date:</string>
+    <string name="title_activity_movie_det">MovieDetActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>

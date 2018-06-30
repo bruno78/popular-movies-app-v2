@@ -91,7 +91,7 @@ public class MoviesActivity extends AppCompatActivity
         if (savedInstanceState != null) {
             sortBy = savedInstanceState.getInt(SORT_BY_KEY);
         }
-        else {
+        else if(sortBy == 0) {
             sortBy = POPULAR;
         }
 
@@ -104,6 +104,8 @@ public class MoviesActivity extends AppCompatActivity
             populateMovieList();
         }
 
+        Log.v("main page state", "ON CREATE IS BEING CALLED");
+
     }
 
     @Override
@@ -114,6 +116,7 @@ public class MoviesActivity extends AppCompatActivity
         outState.putParcelable(MOVIE_LIST_STATE_KEY, mMovieListState);
 
         super.onSaveInstanceState(outState);
+        Log.v("main page state", "ON SAVE INSTANCE STATE IS BEING CALLED");
     }
 
     @Override
@@ -122,6 +125,7 @@ public class MoviesActivity extends AppCompatActivity
 
         sortBy = savedInstanceState.getInt(SORT_BY_KEY);
         mMovieListState = savedInstanceState.getParcelable(MOVIE_LIST_STATE_KEY);
+        Log.v("main page state", "ON RESTORE INSTANCE IS BEING CALLED");
     }
 
     @Override
@@ -131,15 +135,35 @@ public class MoviesActivity extends AppCompatActivity
             mLoadingIndicator.setVisibility(View.GONE);
             initViewModel();
         }
+        Log.v("main page state", "ON START IS BEING CALLED");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // TODO: Find proper way to restore based on sortBy
+
         if (mMovieListState != null) {
             mGridLayoutManager.onRestoreInstanceState(mMovieListState);
         }
+        Log.v("main page state", "ON RESUME IS BEING CALLED");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.v("main page state", "ON DESTROY IS BEING CALLED");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.v("main page state", "ON STOP IS BEING CALLED");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.v("main page state", "ON PAUSE IS BEING CALLED");
     }
 
     // Creates the menu
@@ -186,15 +210,13 @@ public class MoviesActivity extends AppCompatActivity
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
 
-                if (sortBy == FAVORITES) {
-                    mMovieAdapter.setMovieList(movies);
+                mMovieAdapter.setMovieList(movies);
 
-                    if (movies == null) {
-                        showErrorMessage();
-                    }
-                    else if (movies.size() == 0) {
-                        showEmptyState();
-                    }
+                if (movies == null) {
+                    showErrorMessage();
+                }
+                else if (movies.size() == 0) {
+                    showEmptyState();
                 }
             }
         });
@@ -244,7 +266,6 @@ public class MoviesActivity extends AppCompatActivity
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mMovieAdapter.setMovieList(movies);
-
 
         // If movies is not empty or null populate the adapter
         if(movies == null) {

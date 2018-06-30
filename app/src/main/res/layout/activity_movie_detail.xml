@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/greyBackground"
     tools:context="com.brunogtavares.popmovies.MovieDetailActivity"
     android:id="@+id/sv_movie_detail">
@@ -13,33 +13,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <RelativeLayout
+
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/iv_movie_backdrop"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/movie_backdrop"
-                tools:srcCompat="@drawable/backdrop" />
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/iv_movie_backdrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/movie_backdrop"
+                    tools:srcCompat="@drawable/backdrop" />
+
+            </LinearLayout>
+
+
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab_favorites"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                app:fabSize="mini"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="23dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
                 android:scaleType="center"
                 android:tint="@android:color/white"
-                app:srcCompat="@drawable/ic_favorite_black_24dp" />
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_favorite_black_24dp"
+                app:layout_anchor="@id/iv_movie_backdrop"
+                app:layout_anchorGravity="bottom|right|end" />
 
-        </RelativeLayout>
+        </android.support.design.widget.CoordinatorLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,7 +78,7 @@
                         android:layout_height="50dp"
                         android:layout_marginRight="8dp"
                         android:contentDescription="@string/rating_star_image"
-                        app:srcCompat="@drawable/star" />
+                        app:srcCompat="@drawable/star" android:layout_marginEnd="8dp" />
 
                     <TextView
                         android:id="@+id/tv_rating"
