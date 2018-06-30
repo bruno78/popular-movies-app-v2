@@ -50,7 +50,6 @@ public class MoviesActivity extends AppCompatActivity
     private static final int POPULAR = R.id.action_sort_by_popular_movies;
     private static final int TOP_RATED = R.id.action_sort_by_top_rated;
 
-
     private GridLayoutManager mGridLayoutManager;
     private MovieAdapter mMovieAdapter;
 
@@ -71,6 +70,7 @@ public class MoviesActivity extends AppCompatActivity
         mGridLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
+
         // This will help to cache the viewHolders and improve scrolling performance
         mRecyclerView.setItemViewCacheSize(20);
         mRecyclerView.setDrawingCacheEnabled(true);
@@ -82,7 +82,6 @@ public class MoviesActivity extends AppCompatActivity
         mMovieAdapter = new MovieAdapter( this);
         mMovieAdapter.setContext(getApplicationContext());
         // mMovieAdapter.setMovieList(new ArrayList<Movie>());
-
 
         // Set the adapter on the RecyclerView
         // so the list can be populated in the user interface
@@ -103,9 +102,6 @@ public class MoviesActivity extends AppCompatActivity
         else {
             populateMovieList();
         }
-
-        Log.v(LOG_TAG, "ON CREATE IS BEING CALLED");
-
     }
 
     @Override
@@ -116,7 +112,6 @@ public class MoviesActivity extends AppCompatActivity
         outState.putParcelable(MOVIE_LIST_STATE_KEY, mMovieListState);
 
         super.onSaveInstanceState(outState);
-        Log.v(LOG_TAG, "ON SAVE INSTANCE STATE IS BEING CALLED");
     }
 
     @Override
@@ -125,7 +120,6 @@ public class MoviesActivity extends AppCompatActivity
 
         sortBy = savedInstanceState.getInt(SORT_BY_KEY);
         mMovieListState = savedInstanceState.getParcelable(MOVIE_LIST_STATE_KEY);
-        Log.v(LOG_TAG, "ON RESTORE INSTANCE IS BEING CALLED");
     }
 
     @Override
@@ -135,7 +129,6 @@ public class MoviesActivity extends AppCompatActivity
             mLoadingIndicator.setVisibility(View.GONE);
             initViewModel();
         }
-        Log.v(LOG_TAG, "ON START IS BEING CALLED");
     }
 
     @Override
@@ -145,25 +138,6 @@ public class MoviesActivity extends AppCompatActivity
         if (mMovieListState != null) {
             mGridLayoutManager.onRestoreInstanceState(mMovieListState);
         }
-        Log.v(LOG_TAG, "ON RESUME IS BEING CALLED");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.v(LOG_TAG, "ON DESTROY IS BEING CALLED");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.v(LOG_TAG, "ON STOP IS BEING CALLED");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.v(LOG_TAG, "ON PAUSE IS BEING CALLED");
     }
 
     // Creates the menu
@@ -269,7 +243,6 @@ public class MoviesActivity extends AppCompatActivity
         if(sortBy != FAVORITES) {
             mMovieAdapter.setMovieList(movies);
         }
-
 
         // If movies is not empty or null populate the adapter
         if(movies == null) {
