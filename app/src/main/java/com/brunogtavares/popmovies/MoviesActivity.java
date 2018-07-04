@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brunogtavares.popmovies.adapter.MovieAdapter;
 import com.brunogtavares.popmovies.loader.MoviesLoader;
@@ -66,8 +68,10 @@ public class MoviesActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
+        int spanCount = getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE ? 4 : 2;
         // Creating GridLayout to populate the movies as grid
-        mGridLayoutManager = new GridLayoutManager(this, 2);
+        mGridLayoutManager = new GridLayoutManager(this, spanCount);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
@@ -192,6 +196,9 @@ public class MoviesActivity extends AppCompatActivity
                 else if (movies.size() == 0) {
                     showEmptyState();
                 }
+                else {
+                    displaySortMessage();
+                }
             }
         });
     }
@@ -253,13 +260,35 @@ public class MoviesActivity extends AppCompatActivity
         }
         else {
             displayMovies();
+            displaySortMessage();
         }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Movie>> loader) {
+        resetAdapter();
     }
 
     private void displayMovies() {
         mRecyclerView.setVisibility(View.VISIBLE);
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
     }
+
+    private void displaySortMessage() {
+        String msg = "";
+        switch (sortBy) {
+            case POPULAR:
+                msg = "Popular Movies";
+                break;
+            case TOP_RATED:
+                msg = "Top Rated Movies";
+                break;
+            case FAVORITES:
+                msg = "Favorite Movies";
+        }
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
     private void showEmptyState() {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
@@ -273,10 +302,4 @@ public class MoviesActivity extends AppCompatActivity
         // Update empty state with no connection error message
         mErrorMessageDisplay.setText(R.string.no_connection);
     }
-
-    @Override
-    public void onLoaderReset(Loader<List<Movie>> loader) {
-        resetAdapter();
-    }
-
 }
