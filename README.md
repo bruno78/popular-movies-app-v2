@@ -8,10 +8,20 @@
 ## Project Summary
 
 Most of us can relate to kicking back on the couch and enjoying a movie with friends and family.
-In this project, you’ll build an app to allow users to discover the most popular movies playing.
+In this project, the app allows users to discover the most popular movies playing.
 
+## Pre-requisites
 
-You’ll build the complete functionality of this app in two stages which you will submit separately.
+* Android SDK v26
+* Android min SDK v15
+
+## Tools Used 
+
+* Picasso 
+* Room
+* LiveData
+* ViewModel 
+* ButterKnife 
 
 ## Instructions
 
