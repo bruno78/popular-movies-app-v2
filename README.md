@@ -1,7 +1,9 @@
 # Popular Movies App version 2.0
 
 
-<p align="center"><img src="https://cdn.rawgit.com/bruno78/popular-movies-app/5b33a0a7/screenshots/Screen%20Shot%202018-05-28%20at%2011.52.18%20AM.png" width="200" alt="movie list image"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app/5b33a0a7/screenshots/Screen%20Shot%202018-05-28%20at%2011.51.41%20AM.png" width="200" alt="Movie detail"></p>
+<p align="center"><img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/8e31392d/screenshots/device-2018-07-04-202936.png" width="200" alt="movie list image"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/8e31392d/screenshots/device-2018-07-04-204138.png" width="200" alt="movie detail"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/8e31392d/screenshots/device-2018-07-04-204304.png" width="200" alt="movie other screen list"></p>
+
+<p align="center"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/8e31392d/screenshots/device-2018-07-04-205013.png" width="200" alt="image of the landscape mode"> </p>
 
 ## Project Summary
 
