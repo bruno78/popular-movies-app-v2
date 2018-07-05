@@ -36,6 +36,8 @@ import com.brunogtavares.popmovies.model.MovieTrailer;
 import com.brunogtavares.popmovies.viewmodel.MovieDetailViewModel;
 import com.brunogtavares.popmovies.viewmodel.MovieDetailViewModelFactory;
 import com.brunogtavares.popmovies.webservice.NetworkUtils;
+import com.brunogtavares.popmovies.webservice.ThemoviedbApiClient;
+import com.brunogtavares.popmovies.webservice.ThemoviedbApiUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -331,7 +333,8 @@ public class MovieDetailActivity extends AppCompatActivity
     @Override
     public void onClick(MovieTrailer movieTrailer) {
 
-        Uri location = Uri.parse(movieTrailer.getKey());
+        String youtubePath = ThemoviedbApiClient.getYoutubeTrailerPath(movieTrailer.getKey());
+        Uri location = Uri.parse(youtubePath);
         Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, location);
 
         PackageManager packageManager = getPackageManager();

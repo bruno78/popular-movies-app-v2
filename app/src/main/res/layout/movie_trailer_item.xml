@@ -17,10 +17,10 @@
 
         <ImageView
             android:id="@+id/iv_movie_frame"
-            android:layout_width="70dp"
-            android:layout_height="50dp"
-            android:background="#D3D3D3"
-            android:padding="1dp"/>
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:background="#D3D3D3" />
 
         <ImageView
             android:id="@+id/iv_movie_play"

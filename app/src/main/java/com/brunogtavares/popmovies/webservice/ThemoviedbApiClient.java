@@ -19,6 +19,9 @@ public class ThemoviedbApiClient {
 
     private static final String MOVIE_API_KEY = BuildConfig.MOVIE_API_KEY;
     private static final String REQUEST_URL = "https://api.themoviedb.org/3/movie/";
+    private static final String YOUTUBE_REQUEST_URL = "https://www.youtube.com/watch?v=";
+    private static final String TRAILER_THUMBNAIL_REQUEST_URL = "https://img.youtube.com/vi/";
+    private static final String TRAILER_THUMBNAIL = "sddefault.jpg";
 
     public static List<Movie> getAllMovies(String sortBy) {
         Uri.Builder uri = createMovieRequestUri(sortBy);
@@ -53,6 +56,28 @@ public class ThemoviedbApiClient {
         uriBuilder.appendQueryParameter("api_key", MOVIE_API_KEY);
 
         return uriBuilder;
+    }
+
+    public static String getTrailerThumbnail(String key) {
+        // Path to be built:
+        // https://img.youtube.com/vi/<insert-youtube-video-id-here>/sddefault.jpg
+
+        Uri baseUri = Uri.parse(TRAILER_THUMBNAIL_REQUEST_URL + key);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+
+        uriBuilder.appendPath(TRAILER_THUMBNAIL);
+        uriBuilder.build();
+
+        return uriBuilder.toString();
+    }
+
+
+    public static String getYoutubeTrailerPath(String key) {
+        Uri baseUri = Uri.parse(YOUTUBE_REQUEST_URL + key);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        uriBuilder.build();
+
+        return uriBuilder.toString();
     }
 
 }

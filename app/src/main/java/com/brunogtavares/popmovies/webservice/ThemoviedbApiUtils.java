@@ -92,7 +92,7 @@ public class ThemoviedbApiUtils {
                 int id = response.getInt("id");
 
                 JSONObject movieTrailerJson = results.getJSONObject(i);
-                String key = buildMovieTrailerPath(movieTrailerJson.getString("key"));
+                String key = movieTrailerJson.getString("key");
 
                 movieTrailers.add(new MovieTrailer(key, id));
 
@@ -103,10 +103,6 @@ public class ThemoviedbApiUtils {
         }
 
         return movieTrailers;
-    }
-
-    private static String buildMovieTrailerPath(String movieTrailerPath) {
-        return "https://www.youtube.com/watch?v=" + movieTrailerPath;
     }
 
     public static List<MovieReview> extractMovieReviewFeatureFromJSON(String movieReviewJSON, int limit) {
