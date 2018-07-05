@@ -1,9 +1,10 @@
 # Popular Movies App version 2.0
 
 
-<p align="center"><img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/8e31392d/screenshots/device-2018-07-04-202936.png" width="200" alt="movie list image"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/8e31392d/screenshots/device-2018-07-04-204138.png" width="200" alt="movie detail"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/8e31392d/screenshots/device-2018-07-04-204304.png" width="200" alt="movie other screen list"></p>
+<p align="center"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/8e31392d/screenshots/device-2018-07-04-205013.png" width="400" alt="image of the landscape mode"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/c8422e03/screenshots/Screen%20Shot%202018-07-04%20at%2010.22.58%20PM.png" width="200" alt="image of the landscape mode"></p>
 
-<p align="center"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/8e31392d/screenshots/device-2018-07-04-205013.png" width="200" alt="image of the landscape mode"> </p>
+<p align="center"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/8e31392d/screenshots/device-2018-07-04-204304.png" width="200" alt="movie other screen list"> <img src="https://cdn.rawgit.com/bruno78/popular-movies-app-v2/8e31392d/screenshots/device-2018-07-04-204138.png" width="200" alt="movie detail"> </p>
+
 
 ## Project Summary
 
