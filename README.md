@@ -48,7 +48,7 @@ The content of this repository is licensed under a **[Creative Commons Attributi
 
 ## Notes about the project: 
 
-This project is part of [Udacity's Android Developer Nanodegree](https://www.udacity.com/course/android-developer-nanodegree-by-google--nd801) together with Grow With Google Scholarship.
+This project is part of [Udacity's Android Developer Nanodegree](https://www.udacity.com/course/android-developer-nanodegree-by-google--nd801) together with [Grow With Google Scholarship.](https://www.udacity.com/grow-with-google)
 
 This is Stage 2 of the Popular Movies App, for Stage 1, click [here](https://github.com/bruno78/popular-movies-app).
 
