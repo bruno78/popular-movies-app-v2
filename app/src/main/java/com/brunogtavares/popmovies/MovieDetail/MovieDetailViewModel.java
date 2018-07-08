@@ -1,4 +1,4 @@
-package com.brunogtavares.popmovies.viewmodel;
+package com.brunogtavares.popmovies.MovieDetail;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;

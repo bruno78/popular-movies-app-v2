@@ -1,4 +1,4 @@
-package com.brunogtavares.popmovies;
+package com.brunogtavares.popmovies.MovieDetail;
 
 import android.os.Handler;
 import android.os.Looper;

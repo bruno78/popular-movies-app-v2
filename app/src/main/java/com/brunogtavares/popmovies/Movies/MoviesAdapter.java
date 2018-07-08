@@ -1,4 +1,4 @@
-package com.brunogtavares.popmovies.adapter;
+package com.brunogtavares.popmovies.Movies;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -21,9 +21,9 @@ import butterknife.ButterKnife;
  * Read about parcelable: http://www.vogella.com/tutorials/AndroidParcelable/article.html
  */
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
-    private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
+    private static final String LOG_TAG = MoviesAdapter.class.getSimpleName();
 
     private List<Movie> mMovieList;
     private Context mContext;
@@ -34,7 +34,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
 
-    public MovieAdapter(MovieAdapterOnClickHandler clickHandler) {
+    public MoviesAdapter(MovieAdapterOnClickHandler clickHandler) {
         this.mClickHandler = clickHandler;
     }
 

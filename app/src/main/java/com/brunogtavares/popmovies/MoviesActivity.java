@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,10 +20,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.brunogtavares.popmovies.adapter.MovieAdapter;
-import com.brunogtavares.popmovies.loader.MoviesLoader;
+import com.brunogtavares.popmovies.Movies.MoviesAdapter;
+import com.brunogtavares.popmovies.Movies.MoviesLoader;
 import com.brunogtavares.popmovies.model.Movie;
-import com.brunogtavares.popmovies.viewmodel.MoviesViewModel;
+import com.brunogtavares.popmovies.Movies.MoviesViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ import butterknife.ButterKnife;
 import static com.brunogtavares.popmovies.webservice.NetworkUtils.checkForNetworkStatus;
 
 public class MoviesActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<List<Movie>>, MovieAdapter.MovieAdapterOnClickHandler {
+        implements LoaderManager.LoaderCallbacks<List<Movie>>, MoviesAdapter.MovieAdapterOnClickHandler {
 
     private static final String LOG_TAG = MoviesActivity.class.getName();
 
@@ -53,7 +52,7 @@ public class MoviesActivity extends AppCompatActivity
     private static final int TOP_RATED = R.id.action_sort_by_top_rated;
 
     private GridLayoutManager mGridLayoutManager;
-    private MovieAdapter mMovieAdapter;
+    private MoviesAdapter mMoviesAdapter;
 
     @BindView(R.id.rv_movie_list) RecyclerView mRecyclerView;
     @BindView(R.id.tv_empty_view) TextView mErrorMessageDisplay;
@@ -83,13 +82,13 @@ public class MoviesActivity extends AppCompatActivity
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         // Create a new adapter that takes an empty list of movies as input
-        mMovieAdapter = new MovieAdapter( this);
-        mMovieAdapter.setContext(getApplicationContext());
-        // mMovieAdapter.setMovieList(new ArrayList<Movie>());
+        mMoviesAdapter = new MoviesAdapter( this);
+        mMoviesAdapter.setContext(getApplicationContext());
+        // mMoviesAdapter.setMovieList(new ArrayList<Movie>());
 
         // Set the adapter on the RecyclerView
         // so the list can be populated in the user interface
-        mRecyclerView.setAdapter(mMovieAdapter);
+        mRecyclerView.setAdapter(mMoviesAdapter);
 
         if (savedInstanceState != null) {
             sortBy = savedInstanceState.getInt(SORT_BY_KEY);
@@ -188,7 +187,7 @@ public class MoviesActivity extends AppCompatActivity
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
 
-                mMovieAdapter.setMovieList(movies);
+                mMoviesAdapter.setMovieList(movies);
 
                 if (movies == null) {
                     showErrorMessage();
@@ -223,8 +222,8 @@ public class MoviesActivity extends AppCompatActivity
 
     private void resetAdapter() {
         // Create a new adapter with an empty movie list
-        mMovieAdapter.setMovieList(new ArrayList<Movie>());
-        mRecyclerView.setAdapter(mMovieAdapter);
+        mMoviesAdapter.setMovieList(new ArrayList<Movie>());
+        mRecyclerView.setAdapter(mMoviesAdapter);
     }
 
     @Override
@@ -248,7 +247,7 @@ public class MoviesActivity extends AppCompatActivity
         mLoadingIndicator.setVisibility(View.INVISIBLE);
 
         if(sortBy != FAVORITES) {
-            mMovieAdapter.setMovieList(movies);
+            mMoviesAdapter.setMovieList(movies);
         }
 
         // If movies is not empty or null populate the adapter
